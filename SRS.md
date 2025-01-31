@@ -18,3 +18,8 @@
 ## Non-Functional Requirements
 1. Data will be stored neatly and securely in a local JSON file
 2. b
+
+## Future Enhancements / Advanced Features
+1. Google Calendar Integration
+2. ChatGPT Integration
+3. Positive Feedback Mechanisms
