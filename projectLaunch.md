@@ -21,6 +21,9 @@ Reflection Document(Adam)
 A space for us to add our reflections
 Minutes(Presten)
 
+## Weekly Meetings
+Fridays at 1:00pm
+Tuesdays at 5:00pm
 
 ## Brain Storm
 
