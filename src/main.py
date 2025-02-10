@@ -1,15 +1,21 @@
 # CLI for Task Master
+from task_master import task_master
+
+
 def main():
     while True:
         print_menu()
         choice = input("Enter your choice: ")
 
         if choice == "1":
-            add_task()
+            # Add a task
+            pass
         elif choice == "2":
-            delete_task()
+            # Delete a task
+            pass
         elif choice == "3":
-            view_all_tasks()
+            # View all tasks
+            pass
         elif choice == "4":
             break
         else:
