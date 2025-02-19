@@ -7,7 +7,7 @@ import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.task_master import TaskMaster
-from src.task import task  # Make sure this is Task (capital 'T')
+from src.task import Task  # Make sure this is Task (capital 'T')
 
 class TestTasks(unittest.TestCase):
     def setUp(self):
