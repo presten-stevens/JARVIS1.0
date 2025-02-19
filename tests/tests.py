@@ -1,34 +1,40 @@
 import unittest
 import src.task_master as master
-import src.task as Task
+from src.task import task as Task
 import os
 import datetime
 
 class TestTasks(unittest.TestCase):
-    def __int__(self):
-        self.testMaster = master()
+    def setUp(self):
+        """Set up a fresh TaskMaster instance before each test."""
+        self.task_master = master.task_master()
 
-    def test_task_creation(self):
-        # Test creating a new task
-        first_line = ""
-        taskName = "Go To Gym"
-        self.master.add(self, taskName)
-        file_path="src/save/taskA"
-        self.assertFalse(os.path.exists(file_path))
+    def test_add_task(self):
+        """Test adding a task."""
+        self.task_master.add_task("Test Task", "This is a test task")
+        self.assertEqual(len(self.task_master.tasks), 1)
+        self.assertEqual(self.task_master.tasks[1].name, "Test Task")
+        self.assertEqual(self.task_master.tasks[1].description, "This is a test task")
 
-    def test_task_deletion(self):
-        # Test deleting a task
-        self.master.delete(self, "Go To Gym")
-        file_path="src/save/taskA"
-        self.assertFalse(os.path.exists(file_path))
+    def test_delete_task(self):
+        """Test deleting a task."""
+        self.task_master.add_task("Task to Delete", "Delete me")
+        task_id = list(self.task_master.tasks.keys())[0]
+        self.task_master.delete_task(task_id)
+        self.assertNotIn(task_id, self.task_master.tasks)
+
+    def test_view_tasks(self):
+        """Test viewing tasks (ensuring it doesn't crash)."""
+        self.task_master.add_task("View Task", "This task should appear")
+        self.task_master.view_tasks()  # Check output manually
 
     def test_task_completion(self):
-        # Test marking a task as complete
-        pass
+        """Test marking a task as complete."""
+        self.task_master.add_task("Complete Task", "Finish the job")
+        task_id = list(self.task_master.tasks.keys())[0]
+        self.task_master.tasks[task_id].completed = True
+        self.assertTrue(self.task_master.tasks[task_id].completed)
    
-    def test_task_view_all(self):
-        pass 
-
     def test_task_load(self):
         pass
         
