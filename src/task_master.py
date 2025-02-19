@@ -1,6 +1,6 @@
 import json
 from os import fsencode, listdir
-from task import task
+from task import Task
 
 
 class task_master:
@@ -18,19 +18,20 @@ class task_master:
     # Save Tasks as JSON
     def save(self):
         for object in self.tasks:
-            if isinstance(object, task):
+            if isinstance(object, Task):
 
-                data = f"{object.name}~{object.description}"
-
-                with open(self.saveLoc + object.name + ".json", 'w') as file:
-                    json.dump(data, file)
+                with open(self.saveLoc + object.title + ".json", 'w') as file:
+                    json.dump(object.to_dict(), file)
 
     # Load Tasks from JSON
     def load(self):
-        for file in listdir(self.saveDir):
-            data = json.load(file)
-            name, description = data.split("~")
-            self.tasks.append(task(name, description))
+        self.tasks = []
+        for file_path in listdir(self.saveDir):
+            file_path = str(file_path)
+            with open(self.saveLoc + file_path[2:-1], 'r') as file:  # Open the file in read mode
+                data = json.load(file)  # Load the JSON data from the file
+                self.tasks.append(Task.from_dict(data))
+
 
     def printf(self):
         print(self.tasks)

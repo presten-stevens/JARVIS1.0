@@ -3,11 +3,11 @@ import sys
 
 def save():
     master = task_master.task_master()
-    master.tasks.append(task_master.task("task1", "task1desc"))
-    master.tasks.append(task_master.task("task2", "task2desc"))
-    master.tasks.append(task_master.task("task3", "task3desc"))
-    master.tasks.append(task_master.task("task4", "task4desc"))
-    master.tasks.append(task_master.task("task5", "task5desc"))
+    master.tasks.append(task_master.Task("task1", "task1desc", 3, "10/4/3", "school"))
+    master.tasks.append(task_master.Task("task2", "task2desc", 3, "10/4/3", "school"))
+    master.tasks.append(task_master.Task("task3", "task3desc", 3, "10/4/3", "school"))
+    master.tasks.append(task_master.Task("task4", "task4desc", 3, "10/4/3", "school"))
+    master.tasks.append(task_master.Task("task5", "task5desc", 3, "10/4/3", "school"))
     master.save()
 
 
