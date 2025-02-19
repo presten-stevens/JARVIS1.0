@@ -2,8 +2,8 @@
 
 - [X] Ben Oakeson (SM)
 - [X] Presten Stevens (remote)
-- [X] Adam Sellers (PO)
-- [ ] Joshua
+- [ ] Adam Sellers (PO)
+- [X] Joshua
 
 ## Actions
 
@@ -14,7 +14,7 @@ Josh: task class and taskmaster.edit()
 
 ## Announcements
 
-- New github structure
+- Continue working on tasks
 
 ## Impediments
 
@@ -22,7 +22,6 @@ Josh: task class and taskmaster.edit()
 
 ## Knowledge
 
-- UML diagrams and how to make a banana republic.
+- Watch variable naming sensitivity
 
 ## Other
-

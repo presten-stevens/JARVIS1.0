@@ -1,1 +1,1 @@
-"task1~task1desc"
+{"title": "task1", "description": "task1desc", "priority": 3, "dueDate": "10/4/3", "category": "school", "completed": false}

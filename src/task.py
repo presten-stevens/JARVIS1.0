@@ -59,3 +59,6 @@ class Task:
             task_dict['category'],
             task_dict['completed']
         )
+
+    def __str__(self):
+        return f"Name: {self.name}\nDescription: {self.description}"
