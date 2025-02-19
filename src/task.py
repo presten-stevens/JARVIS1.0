@@ -1,7 +1,7 @@
 class Task:
-    def __init__(self, name: str, description: str, priority: int,
+    def __init__(self, title: str, description: str, priority: int,
                 dueDate: str, category: str, completed: bool = False):
-        self.name = name
+        self.title = title
         self.description = description
         self.priority = priority
         self.dueDate = dueDate
@@ -9,7 +9,7 @@ class Task:
         self.completed = completed
 
     def __str__(self):
-        return (f"Name: {self.name}\n"
+        return (f"Title: {self.title}\n"
             f"Description: {self.description}\n"
             f"Priority: {self.priority}\n"
             f"Due Date: {self.dueDate}\n"
@@ -17,8 +17,8 @@ class Task:
             f"Completed: {self.completed}\n"
         )
     
-    def setName(self, name):
-        self.name = name
+    def setTitle(self, title):
+        self.title = title
 
     def setDescription(self, description: str):
         self.description = description
