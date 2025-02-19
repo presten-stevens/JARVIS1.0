@@ -1,6 +1,4 @@
-
-# task_master.py
-from task import Task
+from src.task import Task
 
 class TaskMaster:
     def __init__(self):
