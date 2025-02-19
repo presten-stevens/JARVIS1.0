@@ -1,5 +1,10 @@
 # CLI for Task Master
-from task_master import TaskMaster
+import sys, os
+
+# Add the parent directory of the current script to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from src.task_master import TaskMaster
 
 def main():
     master = TaskMaster()
