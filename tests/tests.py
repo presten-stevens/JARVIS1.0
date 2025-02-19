@@ -6,13 +6,13 @@ import datetime
 # Add the parent directory of the current script to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src.task_master import TaskMaster as master
+from src.task_master import TaskMaster
 from src.task import task  # Make sure this is Task (capital 'T')
 
 class TestTasks(unittest.TestCase):
     def setUp(self):
         """Set up a fresh TaskMaster instance before each test."""
-        self.task_master = master.task_master()
+        self.task_master = TaskMaster()
 
     def test_add_task(self):
         """Test adding a task."""
