@@ -1,8 +1,13 @@
 import unittest
-import src.task_master as master
-from src.task import task as Task
+import sys
 import os
 import datetime
+
+# Add the parent directory of the current script to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from src.task_master import TaskMaster as master
+from src.task import task  # Make sure this is Task (capital 'T')
 
 class TestTasks(unittest.TestCase):
     def setUp(self):
@@ -11,6 +16,7 @@ class TestTasks(unittest.TestCase):
 
     def test_add_task(self):
         """Test adding a task."""
+        print("running tests")
         self.task_master.add_task("Test Task", "This is a test task")
         self.assertEqual(len(self.task_master.tasks), 1)
         self.assertEqual(self.task_master.tasks[1].name, "Test Task")
@@ -37,15 +43,12 @@ class TestTasks(unittest.TestCase):
    
     def test_task_load(self):
         pass
-        
-
-
 
 class TestTask(unittest.TestCase):
 
     def setUp(self):
         # This method will run before each test
-        self.task = Task(
+        self.task = task(  # Fixing the lowercase `task` to `Task`
             title="Finish Homework",
             description="Complete the math homework",
             priority=2,
@@ -58,7 +61,7 @@ class TestTask(unittest.TestCase):
         self.assertEqual(self.task.title, "Finish Homework")
         self.assertEqual(self.task.description, "Complete the math homework")
         self.assertEqual(self.task.priority, 2)
-        self.assertEqual(self.task.dueDate, datetime.strptime("2025-02-25", "%Y-%m-%d"))
+        self.assertEqual(self.task.dueDate, datetime.datetime.strptime("2025-02-25", "%Y-%m-%d"))  # Fixing the datetime import
         self.assertEqual(self.task.category, "Education")
         self.assertFalse(self.task.completed)  # By default, completed should be False
 
@@ -87,6 +90,9 @@ class TestTask(unittest.TestCase):
         self.assertEqual(self.task.title, "Complete Project")
         self.assertEqual(self.task.description, "Finish the final project")
         self.assertEqual(self.task.priority, 1)
-        self.assertEqual(self.task.dueDate, datetime.strptime("2025-03-01", "%Y-%m-%d"))
+        self.assertEqual(self.task.dueDate, datetime.datetime.strptime("2025-03-01", "%Y-%m-%d"))
         self.assertEqual(self.task.category, "Work")
         self.assertTrue(self.task.completed)
+
+
+if __name__ == "__main__": unittest.main(verbosity=2)

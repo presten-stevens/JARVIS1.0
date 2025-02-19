@@ -1,4 +1,4 @@
-class task_master:
+class TaskMaster:
     def __init__(self):
         self.tasks = []
     
