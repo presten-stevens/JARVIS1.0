@@ -44,7 +44,7 @@ class TaskMaster:
     def save(self):
         for object in self.tasks.values():
             if isinstance(object, Task):
-                with open(self.saveLoc + object.title + ".json", 'w') as file:
+                with open(self.saveLoc + object.title.replace(" ", "-") + ".json", 'w') as file:
                     json.dump(object.to_dict(), file)
 
     # Load Tasks from JSON
@@ -52,9 +52,11 @@ class TaskMaster:
         self.tasks = {}
         for id, file_path in enumerate(listdir(self.saveDir)):
             file_path = str(file_path)
+            self.task_id_counter = id + 1
             with open(self.saveLoc + file_path[2:-1], 'r') as file:  # Open the file in read mode
                 data = json.load(file)  # Load the JSON data from the file
-                self.tasks[id] = Task.from_dict(data)
+                self.tasks[self.task_id_counter] = Task.from_dict(data)
+        self.task_id_counter += 1
 
 
     def printf(self):
