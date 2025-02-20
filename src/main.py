@@ -17,9 +17,9 @@ def main():
         choice = input("Enter your choice: ")
 
         if choice == '1':
-            name = input("Enter task name: ")
+            title = input("Enter task name: ")
             description = input("Enter task description: ")
-            master.add_task(name, description)
+            master.add_task(title, description, 0, 0, "", False)
         elif choice == '2':
             try:
                 task_id = int(input("Enter task ID to delete: "))

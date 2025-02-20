@@ -9,9 +9,10 @@ class TaskMaster:
         self.saveLoc = 'saves/'
         self.saveDir = fsencode(self.saveLoc)
 
-    def add_task(self, name, description):
+    def add_task(self, title: str, description: str, priority: int,
+                dueDate: str, category: str, completed: bool = False):
         "Add a new task with a unique ID."
-        new_task = Task(name, description)
+        new_task = Task(title, description, priority, dueDate, category, completed)
         task_id = self.task_id_counter
         self.tasks[task_id] = new_task
         self.task_id_counter += 1
@@ -35,7 +36,7 @@ class TaskMaster:
         print("*" * 20)
         for task_id, task in self.tasks.items():
             print(f"ID: {task_id}")
-            print(f"Name: {task.name}")
+            print(f"Name: {task.title}")
             print(f"Description: {task.description}")
             print("-" * 20)
 
