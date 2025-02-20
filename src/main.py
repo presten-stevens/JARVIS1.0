@@ -13,7 +13,9 @@ def main():
         print("1. Add Task")
         print("2. Delete Task")
         print("3. View Tasks")
-        print("4. Exit")
+        print("4. Save Tasks")
+        print("5. Load Tasks")
+        print("6. Exit")
         choice = input("Enter your choice: ")
 
         if choice == '1':
@@ -29,6 +31,13 @@ def main():
         elif choice == '3':
             master.view_tasks()
         elif choice == '4':
+            master.save()
+            print("Tasks saved successfully.")
+        elif choice == '5':
+            master.load()
+            print("Tasks loaded successfully.")
+        elif choice == '6':
+            print("Exiting...")
             break
         else:
             print("Invalid choice. Please try again.")
