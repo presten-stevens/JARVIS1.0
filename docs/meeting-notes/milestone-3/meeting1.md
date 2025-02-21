@@ -17,7 +17,7 @@ Remote Teams Meeting
 3. Meet Tuesday 2/25 to:
   - Finalize design documents and project structure
   - Split up work for test writing and implementation
-    - *Idea*: Everone writes tesk for one task and then implements another task
+    - *Idea*: Everone writes test for one task and then implements another task
     - That way we get two eyes on every task, and we prioritize test writing
 4. Finish coding by Tuesday 3/4
 5. Finalize sprint by Thursday 3/6 deadline
