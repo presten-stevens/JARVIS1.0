@@ -7,4 +7,4 @@
 ## Navigation Menu
 1. [Project Launch](docs/projectLaunch.md)
 2. [SRS Document](docs/SRS.md)
-3. [Latest Reflection](docs/meeting%20minutes/milestone%202/Retrospective.md)
+3. [Latest Reflection](docs/reflections/milestone2.md)
