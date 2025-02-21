@@ -24,15 +24,26 @@
 2. ChatGPT Integration
 3. Positive Feedback Mechanisms (Streaks/Combos)
 
-## Milestone 2 UPDATE
-Functional Req: The CLI will allow the user to Add, Delete, view, save, and load tasks from a JSON file.
-Nonfunctional Req: The CLI will load and save tasks without any sort of lag.
+## Milestone 2 Update
+Functional Requirement: 
+- The CLI will allow the user to add, delete, view, save, and load tasks from a JSON file.
+
+Nonfunctional Requirement: 
+- The CLI (Command Line Interface) will load and save tasks without any sort of lag.
 
 User Stories:
-As a user I can add tasks to create a list of todo items.
-As a user I can delete tasks I no longer need to keep track of.
-As a user I can view all of my tasks to keep organized and focused on what I need to do.
-As a user I can load my old tasks to help me keep track of long term tasks.
+- As a user I can add tasks to create a list of todo items.
+- As a user I can delete tasks I no longer need to keep track of.
+- As a user I can view all of my tasks to keep organized and focused on what I need to do.
+- As a user I can load my old tasks to help me keep track of long term tasks.
 
-## Lucid Chart UML
-https://lucid.app/lucidchart/c17142f3-8754-414f-972a-95288ab84823/edit?viewport_loc=-117%2C-209%2C2105%2C1712%2C0_0&invitationId=inv_69c60722-b6b5-49e5-aef3-434c32440ed2
+## UML Diagrams
+### Class Diagram
+![UMLv1](images/UMLv1.png)
+[Lucid Chart Link](https://lucid.app/lucidchart/c17142f3-8754-414f-972a-95288ab84823/edit?viewport_loc=-117%2C-209%2C2105%2C1712%2C0_0&invitationId=inv_69c60722-b6b5-49e5-aef3-434c32440ed2)
+
+### Use Case Diagram
+TODO!
+
+### Sequence Diagram 
+TODO!

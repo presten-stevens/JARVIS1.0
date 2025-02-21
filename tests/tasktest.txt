@@ -1,8 +1,0 @@
-Joshua LeVar
-task.py test code
-
-# mytask = Task("Dishes", "Do the dishes", 2, "03/04/2010", "Chores")
-# mytask2 = Task(5, 5, 5, 5, 5)
-
-# print(mytask)
-# print(mytask2)
