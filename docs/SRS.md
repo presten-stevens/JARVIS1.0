@@ -46,4 +46,4 @@ User Stories:
 TODO!
 
 ### Sequence Diagram 
-TODO!
+![SequenceV1](images/sequenceV1.png)
