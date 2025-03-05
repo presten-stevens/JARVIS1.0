@@ -6,21 +6,32 @@ class Task_Card(tk.Frame):
         self.root = root
 
         # Create a frame inside Task_Card
-        self.configure(bg="lightblue",height=150, width=200, padx=20, pady=20,bd=3, relief=tk.RAISED)  # Set background and padding
-        self.grid_propagate(False)
+        self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  # Set background and padding
+        # self.grid_propagate(False)
         
         # Create a label inside the frame for visibility
         task_name = tk.Label(self, text="Task Card", font=( "Arial", 24), bg="lightblue")
-        task_name.grid(column=0,row=0)
+        task_name.grid(column=0,row=0,columnspan=2)
 
         due_date = tk.Label(self, text="xx/xx/xxxx", font=( "Arial", 14), background="lightblue")
-        due_date.grid(column=0, row=1)
+        due_date.grid(column=0, row=1, columnspan=2)
 
-        canvas = tk.Canvas(self, width=200, height=4, highlightthickness=0)
-        canvas.grid(column=0, row=3)
+        canvas = tk.Canvas(self, width=180, height=5, highlightthickness=0, bg="lightblue")
+        canvas.grid(column=0, row=2, columnspan=2, pady=(5, 5))
 
-        canvas.create_line(0, 50, 200, 50, fill="black")
-        
+        canvas.create_line(10, 2, 230, 2, fill="black", width=2)
+
+        edit = tk.Button(self, width=5, text="edit", font=("Arial", 12), bg="blue", fg="black", command=self.on_edit_click)
+        delete = tk.Button(self, width=5, text="delete", font=("Arial", 12), bg="blue", command=self.on_delete_click)
+        edit.grid(column=0, row=3)
+        delete.grid(column=1, row=3)
+
+    def on_edit_click(self):
+        print("edit!!")
+
+    def on_delete_click(self):
+        print("delete!!")
+    
 
 # Create main application window
 root = tk.Tk()
