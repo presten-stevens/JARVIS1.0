@@ -1,6 +1,6 @@
 import tkinter as tk
 
-class Task_Card(tk.Frame):
+class TaskCard(tk.Frame):
     def __init__(self, root):
         super().__init__(root)  # Initialize the parent Frame
         self.root = root
@@ -22,12 +22,30 @@ class Task_Card(tk.Frame):
         canvas.create_line(0, 50, 200, 50, fill="black")
         
 
+class CategoryContainer(tk.Frame):
+    def __init__(self, root):
+        super().__init__(root)  # Initialize the parent Frame
+        self.root = root
+
+        self.configure(bg="grey",height=150, width=200, padx=20, pady=20,bd=3, relief=tk.RAISED)  # Set background and padding
+        self.grid_propagate(False)
+
+    def add_card(self):
+        ...
+    
+
 # Create main application window
 root = tk.Tk()
 root.title("GUI")
 
 # Create and display Task_Card inside root
-card = Task_Card(root)
+card = TaskCard(root)
 card.grid(padx=20, pady=20)  # Ensures it appears in the window
+
+card2 = TaskCard(root)
+card2.grid(padx=30, pady=30) 
+
+school = CategoryContainer(root)
+school.grid(padx=30, pady=30)
 
 root.mainloop()
