@@ -21,10 +21,16 @@ class Task_Card(tk.Frame):
 
         canvas.create_line(10, 2, 230, 2, fill="black", width=2)
 
-        edit = tk.Button(self, width=5, text="edit", font=("Arial", 12), bg="blue", fg="black", command=self.on_edit_click)
-        delete = tk.Button(self, width=5, text="delete", font=("Arial", 12), bg="blue", command=self.on_delete_click)
-        edit.grid(column=0, row=3)
-        delete.grid(column=1, row=3)
+        complete = tk.Button(self, width=10, text="Complete", font=("Arial", 12), bg="green", command=self.on_complete_click)
+        complete.grid(column=0, row=3, columnspan=2)
+        
+        edit = tk.Button(self, width=5, text="Edit", font=("Arial", 12), bg="blue", fg="black", command=self.on_edit_click)
+        delete = tk.Button(self, width=5, text="Delete", font=("Arial", 12), bg="blue", command=self.on_delete_click)
+        edit.grid(column=0, row=4)
+        delete.grid(column=1, row=4)
+
+    def on_complete_click(self):
+        print("complete!!")
 
     def on_edit_click(self):
         print("edit!!")
