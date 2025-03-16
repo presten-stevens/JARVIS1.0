@@ -1,6 +1,6 @@
 import tkinter as tk
 from task import Task
-from task_master import TaskMaster
+from task_master import TaskMaster as task_master
 
 class Task_Card(tk.Frame):
     def __init__(self, root, title, dueDate, completed, task_id):
