@@ -33,7 +33,7 @@ def main():
         elif choice == '4':
             master.save()
             print("Tasks saved successfully.")
-        elif choice == '5':
+        elif choice == '5': 
             master.load()
             print("Tasks loaded successfully.")
         elif choice == '6':

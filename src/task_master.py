@@ -1,5 +1,6 @@
 import json
-from os import fsencode, listdir
+# from os import fsencode, listdir, makedirs
+import os
 from task import Task
 
 class TaskMaster:
@@ -7,7 +8,7 @@ class TaskMaster:
         self.tasks = {}  # Dictionary to store tasks
         self.task_id_counter = 1  # Auto-incrementing counter for task IDs
         self.saveLoc = 'saves/'
-        self.saveDir = fsencode(self.saveLoc)
+        self.saveDir = os.fsencode(self.saveLoc)
 
     def add_task(self, title: str, description: str, priority: int,
                 dueDate: str, category: str, completed: bool = False):
@@ -42,6 +43,7 @@ class TaskMaster:
 
     # Save Tasks as JSON
     def save(self):
+        os.makedirs(self.saveLoc, exist_ok=True)
         for object in self.tasks.values():
             if isinstance(object, Task):
                 with open(self.saveLoc + object.title.replace(" ", "-") + ".json", 'w') as file:
@@ -49,8 +51,12 @@ class TaskMaster:
 
     # Load Tasks from JSON
     def load(self):
+        if not os.path.exists(self.saveLoc):
+            os.makedirs(self.saveLoc, exist_ok=True)
+            return
+        
         self.tasks = {}
-        for id, file_path in enumerate(listdir(self.saveDir)):
+        for id, file_path in enumerate(os.listdir(self.saveDir)):
             file_path = str(file_path)
             self.task_id_counter = id + 1
             with open(self.saveLoc + file_path[2:-1], 'r') as file:  # Open the file in read mode
@@ -58,10 +64,8 @@ class TaskMaster:
                 self.tasks[self.task_id_counter] = Task.from_dict(data)
         self.task_id_counter += 1
 
-
     def printf(self):
         print(self.tasks)
-
 
     # Edit Tasks
     def editTask(self, task_id: int, target_var: str, revision: str):
