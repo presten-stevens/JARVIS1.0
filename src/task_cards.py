@@ -1,4 +1,6 @@
 import tkinter as tk
+from task import Task
+from task_master import TaskMaster
 
 class TaskCard(tk.Frame):
     def __init__(self, root):
@@ -56,9 +58,68 @@ class CategoryContainer(tk.Frame):
         self.update_idletasks()
     
 
+class AddTaskButton(tk.Frame):
+    def __init__(self, root):
+        super().__init__(root)
+        self.root = root
+        complete = tk.Button(self, width=10, text="Add Task", font=("Arial", 12), bg="green", command=self.on_click)
+        complete.grid(column=0, row=0)
+
+    def on_click(self):
+        input_window = tk.Toplevel(self)
+        input_window.wm_title("Add New Task")
+
+        title = tk.StringVar()
+        description = tk.StringVar()
+        priority = tk.StringVar()
+        due_date = tk.StringVar()
+        category = tk.StringVar()
+
+        title_label = tk.Label(input_window, text = 'Title')
+        title_entry = tk.Entry(input_window, textvariable=title)
+
+        description_label = tk.Label(input_window, text='Description')
+        description_entry = tk.Entry(input_window, textvariable=description)
+
+        priority_label = tk.Label(input_window, text='Priority')
+        priority_entry = tk.Entry(input_window, textvariable=priority)
+
+        due_date_label = tk.Label(input_window, text='Due Date')
+        due_date_entry = tk.Entry(input_window, textvariable=due_date)
+
+        category_label = tk.Label(input_window, text='Category')
+        category_entry = tk.Entry(input_window, textvariable=category)
+
+        def submit():
+            task_manager.add_task(title.get(), description.get(), priority.get(), due_date.get(), category.get())
+            input_window.destroy()
+
+        submit_button = tk.Button(input_window, text = 'Submit', command=submit)
+
+        title_label.grid(row=0,column=0)
+        title_entry.grid(row=0,column=1)
+
+        description_label.grid(row=1, column=0)
+        description_entry.grid(row=1, column=1)
+
+        priority_label.grid(row=2, column=0)
+        priority_entry.grid(row=2, column=1)
+
+        due_date_label.grid(row=3, column=0)
+        due_date_entry.grid(row=3, column=1)
+
+        category_label.grid(row=4, column=0)
+        category_entry.grid(row=4, column=1)
+
+        submit_button.grid(row=5, column=0, columnspan=2)
+
+        
+
 # Create main application window
 root = tk.Tk()
 root.title("GUI")
+
+task_manager = TaskMaster()
 
 # Create and display Task_Card inside root
 # card = TaskCard(root)
@@ -78,5 +139,8 @@ work.grid(row=0, column=1, padx=30, pady=30)
 work.add_card(TaskCard(root))
 work.add_card(TaskCard(root))
 work.add_card(TaskCard(root))
+
+addTask = AddTaskButton(root)
+addTask.grid(padx=30, pady=30) 
 
 root.mainloop()
