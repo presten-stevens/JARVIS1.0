@@ -1,7 +1,7 @@
 import tkinter as tk
 from task_master import TaskMaster
 
-def display_tasks(task_mngr: TaskMaster, root: tk.Tk, label_frame: tk.Frame):
+def display_tasks(task_mngr: TaskMaster, label_frame: tk.Frame):
     """
     Displays the tasks in the task manager by clearing the old labels
     and adding new ones to the label frame.
@@ -10,11 +10,9 @@ def display_tasks(task_mngr: TaskMaster, root: tk.Tk, label_frame: tk.Frame):
     for widget in label_frame.winfo_children():
         widget.destroy()
 
-    # Create new labels for the tasks
-    labels = create_labels(task_mngr, root)
-
-    # Pack the labels into the label frame
-    for label in labels:
+    for task in task_mngr.tasks.values():
+        label_str = f"Title: {task.title}\nDescription: {task.description}\nDue Date: {task.dueDate}"
+        label = tk.Label(label_frame, text=label_str)
         label.pack(pady=5)
 
 def load(root: tk.Tk, task_master: TaskMaster):
@@ -28,8 +26,7 @@ def save(root: tk.Tk, task_master: TaskMaster):
 def main():
     root = tk.Tk()
     root.title("Task Master")
-    frame= tk.Frame(root)
-    frame.pack(pady=20)
+    frame = tk.Frame(root)
 
     task_master = TaskMaster()
 
@@ -42,27 +39,11 @@ def main():
     loadBtn.pack(pady=5)
     saveBtn = tk.Button(root, text="Save", command=lambda: save(root, task_master))
     saveBtn.pack(pady=5)
-    viewBtn = tk.Button(root, text="View Tasks", command=lambda: display_tasks(task_master, root, frame))
+    viewBtn = tk.Button(root, text="View Tasks", command=lambda: display_tasks(task_master, frame))
     viewBtn.pack(pady=5)
+    frame.pack(pady=20)
 
     root.mainloop()
-    '''
-    # Set the size of the window (width x height)
-    # Add a label widget to the window
-    label = tk.Label(root, text="Enter your name:")
-    label.pack(pady=10)  # Add some padding to the label
-
-    # Add an entry widget to the window
-    entry = tk.Entry(root)
-    entry.pack(pady=5)  # Add some padding to the entry widget
-
-    # Add a button widget that will call the update_label function
-    button = tk.Button(root, text="Submit", command=lambda: update_label(entry, label))
-    button.pack(pady=10)  # Add some padding to the button
-
-    # Run the Tkinter event loop to display the window
-    root.mainloop()
-    '''
 
 if __name__ == "__main__":
     main()
