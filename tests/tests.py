@@ -52,7 +52,7 @@ class TestTask(unittest.TestCase):
             title="Finish Homework",
             description="Complete the math homework",
             priority=2,
-            dueDate="2025-02-25",  # Assuming the dueDate is in YYYY-MM-DD format
+            due_date="2025-02-25",  # Assuming the due_date is in YYYY-MM-DD format
             category="Education"
         )
 
@@ -61,7 +61,7 @@ class TestTask(unittest.TestCase):
         self.assertEqual(self.task.title, "Finish Homework")
         self.assertEqual(self.task.description, "Complete the math homework")
         self.assertEqual(self.task.priority, 2)
-        self.assertEqual(self.task.dueDate, datetime.datetime.strptime("2025-02-25", "%Y-%m-%d"))  # Fixing the datetime import
+        self.assertEqual(self.task.due_date, datetime.datetime.strptime("2025-02-25", "%Y-%m-%d"))  # Fixing the datetime import
         self.assertEqual(self.task.category, "Education")
         self.assertFalse(self.task.completed)  # By default, completed should be False
 
@@ -79,18 +79,18 @@ class TestTask(unittest.TestCase):
 
     def test_setters(self):
         # Test the setter methods
-        self.task.setTitle("Complete Project")
-        self.task.setDescription("Finish the final project")
-        self.task.setPriority(1)
-        self.task.setDueDate("2025-03-01")
-        self.task.setCategory("Work")
-        self.task.setCompleted(True)
+        self.task.set_title("Complete Project")
+        self.task.set_description("Finish the final project")
+        self.task.set_priority(1)
+        self.task.set_due_date("2025-03-01")
+        self.task.set_category("Work")
+        self.task.set_completed(True)
 
         # Check if the values were correctly updated
         self.assertEqual(self.task.title, "Complete Project")
         self.assertEqual(self.task.description, "Finish the final project")
         self.assertEqual(self.task.priority, 1)
-        self.assertEqual(self.task.dueDate, datetime.datetime.strptime("2025-03-01", "%Y-%m-%d"))
+        self.assertEqual(self.task.due_date, datetime.datetime.strptime("2025-03-01", "%Y-%m-%d"))
         self.assertEqual(self.task.category, "Work")
         self.assertTrue(self.task.completed)
 

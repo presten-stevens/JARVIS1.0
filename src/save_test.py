@@ -23,7 +23,7 @@ def main(arg):
     elif arg == "load":
         load()
     else:
-        print("Usage: python3 saveTest.py save/load")
+        print("Usage: python3 save_test.py save/load")
 
 if __name__ == "__main__":
     main(sys.argv[1])

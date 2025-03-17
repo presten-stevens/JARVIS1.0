@@ -1,10 +1,10 @@
 class Task:
     def __init__(self, title: str, description: str, priority: int,
-                dueDate: str, category: str, completed: bool = False):
+                due_date: str, category: str, completed: bool = False):
         self.title = title
         self.description = description
         self.priority = priority
-        self.dueDate = dueDate
+        self.due_date = due_date
         self.category = category
         self.completed = completed
 
@@ -12,7 +12,7 @@ class Task:
         return (f"Title: {self.title}\n"
             f"Description: {self.description}\n"
             f"Priority: {self.priority}\n"
-            f"Due Date: {self.dueDate}\n"
+            f"Due Date: {self.due_date}\n"
             f"Category: {self.category}\n"
             f"Completed: {self.completed}\n"
         )
@@ -20,22 +20,22 @@ class Task:
     def __repr__(self):
         return self.title
 
-    def setTitle(self, title):
+    def set_title(self, title):
         self.title = title
 
-    def setDescription(self, description: str):
+    def set_description(self, description: str):
         self.description = description
 
-    def setPriority(self, priority: int):
+    def set_priority(self, priority: int):
         self.priority = priority
 
-    def setDueDate(self, dueDate: str):
-        self.dueDate = dueDate
+    def set_due_date(self, due_date: str):
+        self.due_date = due_date
 
-    def setCategory(self, category: str):
+    def set_category(self, category: str):
         self.category = category
 
-    def setCompleted(self, completed: bool):
+    def set_completed(self, completed: bool):
         self.completed = completed
 
     def to_dict(self):
@@ -43,7 +43,7 @@ class Task:
             'title': self.title,
             'description': self.description,
             'priority': self.priority,
-            'dueDate': self.dueDate,
+            'due_date': self.due_date,
             'category': self.category,
             'completed': self.completed
         }
@@ -55,7 +55,7 @@ class Task:
             task_dict['title'],
             task_dict['description'],
             task_dict['priority'],
-            task_dict['dueDate'],
+            task_dict['due_date'],
             task_dict['category'],
             task_dict['completed']
         )

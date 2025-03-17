@@ -8,7 +8,7 @@ class TaskCard(tk.Frame):
     def __init__(self, root, task: Task):
         super().__init__(root)  # Initialize the parent Frame
         self.root = root
-        self.id = the_task_master.add_task(task.title, task.description, task.priority, task.dueDate, task.category, task.completed)
+        self.id = the_task_master.add_task(task.title, task.description, task.priority, task.due_date, task.category, task.completed)
         self.update_task()
 
         # Create a frame inside Task_Card
@@ -18,7 +18,7 @@ class TaskCard(tk.Frame):
         self.task_name = tk.Label(self, text=self.task.title, font=( "Arial", 24), bg="lightblue")
         self.task_name.grid(column=0,row=0,columnspan=2)
 
-        self.due_date = tk.Label(self, text=self.task.dueDate, font=( "Arial", 14), background="lightblue")
+        self.due_date = tk.Label(self, text=self.task.due_date, font=( "Arial", 14), background="lightblue")
         self.due_date.grid(column=0, row=1, columnspan=2)
 
         self.canvas = tk.Canvas(self, width=180, height=5, highlightthickness=0, bg="lightblue")
@@ -38,7 +38,7 @@ class TaskCard(tk.Frame):
         self.task = the_task_master.get_task(self.id)
 
     def on_complete_click(self):
-        the_task_master.editTask(self.id, "completed", "True")
+        the_task_master.edit_task(self.id, "completed", "True")
         self.update_task()
         print("Task Completed")
 
@@ -56,7 +56,7 @@ class TaskCard(tk.Frame):
 
         tk.Label(edit_window, text="Edit Due Date:", bg="white").pack(pady=5)
         date_entry = tk.Entry(edit_window)
-        date_entry.insert(0, self.task.dueDate)
+        date_entry.insert(0, self.task.due_date)
         date_entry.pack(pady=5)
 
         def save_changes():
@@ -64,8 +64,8 @@ class TaskCard(tk.Frame):
             new_due_date = date_entry.get()
             if new_title and new_due_date:
                 # Update task in the backend
-                the_task_master.editTask(self.id, "title", self.task.title)
-                the_task_master.editTask(self.id, "dueDate", self.task.dueDate)
+                the_task_master.edit_task(self.id, "title", self.task.title)
+                the_task_master.edit_task(self.id, "due_date", self.task.due_date)
 
                 # Refresh task in the frontend
                 self.update_task()
