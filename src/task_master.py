@@ -3,10 +3,10 @@ from os import fsencode, listdir
 from task import Task
 
 class TaskMaster:
-    def __init__(self):
+    def __init__(self, saveLoc = "saves/"):
         self.tasks = {}  # Dictionary to store tasks
         self.task_id_counter = 1  # Auto-incrementing counter for task IDs
-        self.saveLoc = 'saves/'
+        self.saveLoc = saveLoc
         self.saveDir = fsencode(self.saveLoc)
 
     def add_task(self, title: str, description: str, priority: int,
