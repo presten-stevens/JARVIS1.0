@@ -2,24 +2,23 @@ import tkinter as tk
 from task import Task
 from task_master import TaskMaster
 
-class Task_Card(tk.Frame):
-    def __init__(self, root, title, dueDate, completed, task_id):
+the_task_master = TaskMaster()
+
+class TaskCard(tk.Frame):
+    def __init__(self, root, task: Task):
         super().__init__(root)  # Initialize the parent Frame
         self.root = root
-        self.title = title
-        self.dueDate = dueDate
-        self.completed = completed
-        self.task_id = task_id
-        self.myMaster = task_master()
+        self.id = the_task_master.add_task(task.title, task.description, task.priority, task.dueDate, task.category, task.completed)
+        self.update_task()
+
         # Create a frame inside Task_Card
         self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  # Set background and padding
-        # self.grid_propagate(False)
         
         # Create a label inside the frame for visibility
-        self.task_name = tk.Label(self, text=self.title, font=( "Arial", 24), bg="lightblue")
+        self.task_name = tk.Label(self, text=self.task.title, font=( "Arial", 24), bg="lightblue")
         self.task_name.grid(column=0,row=0,columnspan=2)
 
-        self.due_date = tk.Label(self, text=self.dueDate, font=( "Arial", 14), background="lightblue")
+        self.due_date = tk.Label(self, text=self.task.dueDate, font=( "Arial", 14), background="lightblue")
         self.due_date.grid(column=0, row=1, columnspan=2)
 
         self.canvas = tk.Canvas(self, width=180, height=5, highlightthickness=0, bg="lightblue")
@@ -35,10 +34,13 @@ class Task_Card(tk.Frame):
         self.edit.grid(column=0, row=4)
         self.delete.grid(column=1, row=4)
 
+    def update_task(self):
+        self.task = the_task_master.get_task(self.id)
+
     def on_complete_click(self):
-        self.completed = True
-        self.myMaster.editTask(self.task_id, "completed", "True")
-        print("complete!!")
+        the_task_master.editTask(self.id, "completed", "True")
+        self.update_task()
+        print("Task Completed")
 
     def on_edit_click(self):
         """Opens a pop-up window to edit the task details."""
@@ -49,25 +51,24 @@ class Task_Card(tk.Frame):
 
         tk.Label(edit_window, text="Edit Task Name:", bg="white").pack(pady=5)
         name_entry = tk.Entry(edit_window)
-        name_entry.insert(0, self.title)
+        name_entry.insert(0, self.task.title)
         name_entry.pack(pady=5)
 
         tk.Label(edit_window, text="Edit Due Date:", bg="white").pack(pady=5)
         date_entry = tk.Entry(edit_window)
-        date_entry.insert(0, self.dueDate)
+        date_entry.insert(0, self.task.dueDate)
         date_entry.pack(pady=5)
 
         def save_changes():
             new_title = name_entry.get()
             new_due_date = date_entry.get()
             if new_title and new_due_date:
-                # Update internal variables
-                self.title = str(new_title)
-                self.dueDate = new_due_date
-
                 # Update task in the backend
-                self.myMaster.editTask(self.task_id, "title", self.title)
-                self.myMaster.editTask(self.task_id, "dueDate", self.dueDate)
+                the_task_master.editTask(self.id, "title", self.task.title)
+                the_task_master.editTask(self.id, "dueDate", self.task.dueDate)
+
+                # Refresh task in the frontend
+                self.update_task()
 
                 # Update UI labels
                 self.task_name.config(text=new_title)
@@ -85,9 +86,10 @@ class Task_Card(tk.Frame):
         print("Editing task...")
 
     def on_delete_click(self):
-        self.myMaster.delete_task(self.task_id)
+        the_task_master.delete_task(self.id)
+        self.task = None
         self.destroy()
-        print("delete!!")
+        print("Task Deleted")
     
 
 class CategoryContainer(tk.Frame):
@@ -185,12 +187,10 @@ class AddTaskButton(tk.Frame):
 root = tk.Tk()
 root.title("Task Manager")
 
-
-# Example Task Card (Fixed the missing arguments issue)
-card = Task_Card(root, "Finish Project", "2025-03-20", False, 1)
+# Example Task Card
+card = TaskCard(root, Task("2450 HW", "Do Milestone 3", 0, "March 10", "School"))
 card.grid(padx=20, pady=20)
 
-task_manager = TaskMaster()
 
 # Create and display Task_Card inside root
 # card = TaskCard(root)
@@ -199,19 +199,20 @@ task_manager = TaskMaster()
 # card2 = TaskCard(root)
 # card2.grid(padx=30, pady=30) 
 
-school = CategoryContainer(root, "School")
-school.grid(row=0, column=0, padx=30, pady=30)
-school.add_card(TaskCard(root))
-school.add_card(TaskCard(root))
-school.add_card(TaskCard(root))
+# school = CategoryContainer(root, "School")
+# school.grid(row=0, column=0, padx=30, pady=30)
 
-work = CategoryContainer(root, "Work")
-work.grid(row=0, column=1, padx=30, pady=30)
-work.add_card(TaskCard(root))
-work.add_card(TaskCard(root))
-work.add_card(TaskCard(root))
+# school.add_card(TaskCard(root, task1))
+# # school.add_card(TaskCard(root))
+# # school.add_card(TaskCard(root))
 
-addTask = AddTaskButton(root)
-addTask.grid(padx=30, pady=30) 
+# work = CategoryContainer(root, "Work")
+# work.grid(row=0, column=1, padx=30, pady=30)
+# work.add_card(TaskCard(root))
+# # work.add_card(TaskCard(root))
+# # work.add_card(TaskCard(root))
+
+# addTask = AddTaskButton(root)
+# addTask.grid(padx=30, pady=30) 
 
 root.mainloop()

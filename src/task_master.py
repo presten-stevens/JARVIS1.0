@@ -18,6 +18,7 @@ class TaskMaster:
         self.tasks[task_id] = new_task
         self.task_id_counter += 1
         print(f"Task added with ID: {task_id}")
+        return task_id
 
     def delete_task(self, task_id):
         "Delete a task by its ID."
@@ -80,3 +81,6 @@ class TaskMaster:
         
         setattr(task, target_var, revision)
         print(task)
+
+    def get_task(self, task_id: int):
+        return self.tasks[task_id]
