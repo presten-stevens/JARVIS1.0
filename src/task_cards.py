@@ -1,8 +1,8 @@
 import tkinter as tk
 from task import Task
-from task_master import TaskMaster as task_master
+from task_master import TaskMaster
 
-class Task_Card(tk.Frame):
+class TaskCard(tk.Frame):
     def __init__(self, root, title, dueDate, completed, task_id):
         super().__init__(root)  # Initialize the parent Frame
         self.root = root
@@ -10,7 +10,7 @@ class Task_Card(tk.Frame):
         self.dueDate = dueDate
         self.completed = completed
         self.task_id = task_id
-        self.myMaster = task_master()
+        self.myMaster = TaskMaster()
         # Create a frame inside Task_Card
         self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  # Set background and padding
         # self.grid_propagate(False)
@@ -187,7 +187,7 @@ root.title("Task Manager")
 
 
 # Example Task Card (Fixed the missing arguments issue)
-card = Task_Card(root, "Finish Project", "2025-03-20", False, 1)
+card = TaskCard(root, "Finish Project", "2025-03-20", False, 1)
 card.grid(padx=20, pady=20)
 
 task_manager = TaskMaster()
@@ -201,15 +201,15 @@ task_manager = TaskMaster()
 
 school = CategoryContainer(root, "School")
 school.grid(row=0, column=0, padx=30, pady=30)
-school.add_card(TaskCard(root))
-school.add_card(TaskCard(root))
-school.add_card(TaskCard(root))
+school.add_card(TaskCard(root, "Math Homework", "2025-03-20", False, 1))
+school.add_card(TaskCard(root, "Science Project", "2025-03-20", False, 2))
+school.add_card(TaskCard(root, "History Essay", "2025-03-20", False, 3))
 
 work = CategoryContainer(root, "Work")
 work.grid(row=0, column=1, padx=30, pady=30)
-work.add_card(TaskCard(root))
-work.add_card(TaskCard(root))
-work.add_card(TaskCard(root))
+work.add_card(TaskCard(root, "Meeting with Boss", "2025-03-20", False, 4))
+work.add_card(TaskCard(root, "Submit Report", "2025-03-20", False, 5))
+work.add_card(TaskCard(root, "Prepare Presentation", "2025-03-20", False, 6))
 
 addTask = AddTaskButton(root)
 addTask.grid(padx=30, pady=30) 
