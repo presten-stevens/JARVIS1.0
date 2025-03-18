@@ -39,11 +39,14 @@ User Stories:
 
 ## UML Diagrams
 ### Class Diagram
-![UMLv1](images/UMLv1.png)
+![UMLv2](images/ClassDiagram.png)
 [Lucid Chart Link](https://lucid.app/lucidchart/c17142f3-8754-414f-972a-95288ab84823/edit?viewport_loc=-117%2C-209%2C2105%2C1712%2C0_0&invitationId=inv_69c60722-b6b5-49e5-aef3-434c32440ed2)
 
 ### Use Case Diagram
 ![usecaseV1](images/usecaseV1.png)
 
 ### Sequence Diagram 
-![SequenceV1](images/sequenceV1.png)
+![SequenceV2](images/sequenceV2.png)
+
+### Proof of ZenHub
+![ZenHub](../.zenhub_status/zenhubScreenshotMilestone3.png)

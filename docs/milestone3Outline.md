@@ -3,18 +3,18 @@
 
 ## Deliverables
 - [ ] GUI Application
-  - [ ] View Task
-  - [ ] Add Task
-  - [ ] Delete Task
+  - [x] View Task
+  - [x] Add Task
+  - [x] Delete Task
   - [ ] Save and Load Tasks 
-- [ ] Wireframes / Markups
-- [ ] Updated SRS
-  - [ ] Updated Class Diagram
-  - [ ] Updated Sequence Diagram
-- [ ] Zenhub Screenshot
-- [ ] Meeting Reports
+- [x] Wireframes / Markups
+- [x] Updated SRS
+  - [x] Updated Class Diagram
+  - [x] Updated Sequence Diagram
+- [x] Zenhub Screenshot
+- [x] Meeting Reports
 - [ ] Reflections
 
 ## Other Tasks
 - [ ] Write Test Cases
-- [ ] Standardize Style : [PEP-8](https://peps.python.org/pep-0008/)
+- [x] Standardize Style : [PEP-8](https://peps.python.org/pep-0008/)
