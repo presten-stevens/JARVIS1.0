@@ -2,11 +2,11 @@
 [Zenhub Board](https://app.zenhub.com/workspaces/jarvis-6797f1cdbc165e0032daaa99/board)
 
 ## Deliverables
-- [ ] GUI Application
+- [x] GUI Application
   - [x] View Task
   - [x] Add Task
   - [x] Delete Task
-  - [ ] Save and Load Tasks 
+  - [x] Save and Load Tasks 
 - [x] Wireframes / Markups
 - [x] Updated SRS
   - [x] Updated Class Diagram
