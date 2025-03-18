@@ -2,20 +2,20 @@ import tkinter as tk
 from task import Task
 from task_master import TaskMaster
 
-the_task_master = TaskMaster()
+task_manager = TaskMaster()
 
 class TaskCard(tk.Frame):
     def __init__(self, root, task: Task):
         super().__init__(root)  # Initialize the parent Frame
         self.root = root
-        self.id = the_task_master.add_task(task.title, task.description, task.priority, task.due_date, task.category, task.completed)
+        self.id = task_manager.add_task(task.title, task.description, task.priority, task.due_date, task.category, task.completed)
         self.update_task()
 
         # Create a frame inside Task_Card
         self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  # Set background and padding
         
         # Create a label inside the frame for visibility
-        self.task_name = tk.Label(self, text=self.task.title, font=( "Arial", 24), bg="lightblue")
+        self.task_name = tk.Label(self, text=self.task.title, font=( "Arial", 24), bg="lightblue")  
         self.task_name.grid(column=0,row=0,columnspan=2)
 
         self.due_date = tk.Label(self, text=self.task.due_date, font=( "Arial", 14), background="lightblue")
@@ -29,17 +29,23 @@ class TaskCard(tk.Frame):
         self.complete = tk.Button(self, width=10, text="Complete", font=("Arial", 12), bg="green", command=self.on_complete_click)
         self.complete.grid(column=0, row=3, columnspan=2)
         
-        self.edit = tk.Button(self, width=5, text="Edit", font=("Arial", 12), bg="blue", fg="black", command=self.on_edit_click)
-        self.delete = tk.Button(self, width=5, text="Delete", font=("Arial", 12), bg="blue", command=self.on_delete_click)
+        self.edit = tk.Button(self, width=5, text="Edit", font=("Arial", 12), bg="azure4", fg="black", command=self.on_edit_click)
+        self.delete = tk.Button(self, width=5, text="Delete", font=("Arial", 12), bg="azure4", command=self.on_delete_click)
         self.edit.grid(column=0, row=4)
         self.delete.grid(column=1, row=4)
 
     def update_task(self):
-        self.task = the_task_master.get_task(self.id)
+        self.task = task_manager.get_task(self.id)
 
     def on_complete_click(self):
-        the_task_master.edit_task(self.id, "completed", "True")
+        if self.task.completed:
+            return 
+        
+        task_manager.edit_task(self.id, "completed", "True")
         self.update_task()
+
+        default_category.remove_card(self)
+        completed_category.add_card(self)
         print("Task Completed")
 
     def on_edit_click(self):
@@ -64,8 +70,8 @@ class TaskCard(tk.Frame):
             new_due_date = date_entry.get()
             if new_title and new_due_date:
                 # Update task in the backend
-                the_task_master.edit_task(self.id, "title", self.task.title)
-                the_task_master.edit_task(self.id, "due_date", self.task.due_date)
+                task_manager.edit_task(self.id, "title", self.task.title)
+                task_manager.edit_task(self.id, "due_date", self.task.due_date)
 
                 # Refresh task in the frontend
                 self.update_task()
@@ -86,7 +92,7 @@ class TaskCard(tk.Frame):
         print("Editing task...")
 
     def on_delete_click(self):
-        the_task_master.delete_task(self.id)
+        task_manager.delete_task(self.id)
         self.task = None
         self.destroy()
         print("Task Deleted")
@@ -104,9 +110,9 @@ class CategoryContainer(tk.Frame):
         self.cards = []
 
         width = self.CARD_SIZE[0] + (2 * self.INTERIOR_PADDING[1])
-        height = ((self.CARD_SIZE[1] + self.INTERIOR_PADDING[1]) * self.CARD_DISPLAY_SIZE) + 20
+        height = ((self.CARD_SIZE[1] + self.INTERIOR_PADDING[1] + 40) * self.CARD_DISPLAY_SIZE) 
 
-        self.configure(bg="grey",height=height, width=width, bd=3, relief=tk.RAISED) 
+        self.configure(bg="grey", height=height, width=width, bd=3, relief=tk.RAISED) 
         self.grid_propagate(False)
 
         # title
@@ -118,19 +124,39 @@ class CategoryContainer(tk.Frame):
         self.card_frame.grid(row=1, column=0, sticky="nsew")
         
         self.grid_rowconfigure(1, weight=1)
-        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)  
 
     def add_card(self, card: TaskCard):
+        row_num = len(self.cards)
         self.cards.append(card)
-        card.grid(column=0, row=len(self.cards) - 1, pady=5, padx=5, in_=self.card_frame)
+        if row_num >= 3: 
+            return
+        card.grid(column=0, row=row_num, pady=5, padx=10, in_=self.card_frame)
         self.update_idletasks()
+
+    def remove_card(self, card: TaskCard):
+        if card not in self.cards:
+            return
+        card.grid_forget()  
+        self.cards.remove(card)  
+        self.rearrange_cards()
+
+    def rearrange_cards(self):
+        for index, card in enumerate(self.cards):
+            if index < 2:
+                card.grid(row=index)  
+            elif index == 2:
+                card.grid(column=0, row=index, pady=5, padx=10, in_=self.card_frame)
+            else:
+                card.grid_forget()
+
     
 
 class AddTaskButton(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
         self.root = root
-        complete = tk.Button(self, width=10, text="Add Task", font=("Arial", 12), bg="green", command=self.on_click)
+        complete = tk.Button(self, width=10, text="Add Task", font=("Arial", 12), bg="cornflowerblue", command=self.on_click)
         complete.grid(column=0, row=0)
 
     def on_click(self):
@@ -159,7 +185,7 @@ class AddTaskButton(tk.Frame):
         category_entry = tk.Entry(input_window, textvariable=category)
 
         def submit():
-            task_manager.add_task(title.get(), description.get(), priority.get(), due_date.get(), category.get())
+            default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(), category.get())))
             input_window.destroy()
 
         submit_button = tk.Button(input_window, text = 'Submit', command=submit)
@@ -187,14 +213,26 @@ class AddTaskButton(tk.Frame):
 root = tk.Tk()
 root.title("Task Manager")
 
-# Example Task Card
-card = TaskCard(root, Task("2450 HW", "Do Milestone 3", 0, "March 10", "School"))
-card.grid(padx=20, pady=20)
+# Add Task Button
+add_button = AddTaskButton(root)
+add_button.grid(row=0, column=0, padx=20)
 
+default_category = CategoryContainer(root, "Default")
+default_category.grid(row=0, column=1, padx=30, pady=30)
+
+completed_category = CategoryContainer(root, "Completed")
+completed_category.grid(row=0, column=2, padx=30, pady=30)
+
+# Example Task Card
+default_category.add_card(TaskCard(root, Task("2450 HW", "Do Milestone 3", 0, "March 10", "School")))
+default_category.add_card(TaskCard(root, Task("2700 HW", "Do Simulations", 2, "March 11", "School")))
+default_category.add_card(TaskCard(root, Task("2010 HW", "Do Paper", 5, "March 12", "School")))
+
+root.mainloop()
 
 # Create and display Task_Card inside root
 # card = TaskCard(root)
-# card.grid(padx=20, pady=20)  # Ensures it appears in the window
+# card.grid(padx=20, pady=20)  
 
 # card2 = TaskCard(root)
 # card2.grid(padx=30, pady=30) 
@@ -212,7 +250,5 @@ card.grid(padx=20, pady=20)
 # # work.add_card(TaskCard(root))
 # # work.add_card(TaskCard(root))
 
-# addTask = AddTaskButton(root)
-# addTask.grid(padx=30, pady=30) 
+ 
 
-root.mainloop()
