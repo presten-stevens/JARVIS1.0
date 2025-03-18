@@ -15,13 +15,7 @@ def display_tasks(task_mngr: TaskMaster, label_frame: tk.Frame):
         label = tk.Label(label_frame, text=label_str)
         label.pack(pady=5)
 
-def load(root: tk.Tk, task_master: TaskMaster):
-    task_master.load()
-    print(task_master.tasks)
 
-def save(root: tk.Tk, task_master: TaskMaster):
-    task_master.save()
-    print("saved")
 
 def main():
     root = tk.Tk()
@@ -35,10 +29,8 @@ def main():
     root.geometry("3000x2000")
 
 
-    loadBtn = tk.Button(root, text="Load", command=lambda: load(root, task_master))
-    loadBtn.pack(pady=5)
-    saveBtn = tk.Button(root, text="Save", command=lambda: save(root, task_master))
-    saveBtn.pack(pady=5)
+    
+    
     viewBtn = tk.Button(root, text="View Tasks", command=lambda: display_tasks(task_master, frame))
     viewBtn.pack(pady=5)
     frame.pack(pady=20)

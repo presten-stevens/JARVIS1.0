@@ -90,3 +90,6 @@ class TaskMaster:
 
     def get_task(self, task_id: int):
         return self.tasks[task_id]
+    
+    def get_tasks(self):
+        return self.tasks

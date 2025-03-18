@@ -5,10 +5,14 @@ from task_master import TaskMaster
 task_manager = TaskMaster()
 
 class TaskCard(tk.Frame):
-    def __init__(self, root, task: Task):
+    def __init__(self, root, task: Task, id: int = None):
         super().__init__(root)  # Initialize the parent Frame
         self.root = root
-        self.id = task_manager.add_task(task.title, task.description, task.priority, task.due_date, task.category, task.completed)
+        if id:
+            self.id = id
+            print("IDIDDDDDDDDDDDDDDd")
+        else:
+            self.id = task_manager.add_task(task.title, task.description, task.priority, task.due_date, task.category, task.completed)
         self.update_task()
 
         # Create a frame inside Task_Card
@@ -93,8 +97,12 @@ class TaskCard(tk.Frame):
 
     def on_delete_click(self):
         task_manager.delete_task(self.id)
+        if self.task.completed:
+            completed_category.remove_card(self)
+        else:
+            default_category.remove_card(self)
+
         self.task = None
-        self.destroy()
         print("Task Deleted")
     
 
@@ -143,14 +151,11 @@ class CategoryContainer(tk.Frame):
 
     def rearrange_cards(self):
         for index, card in enumerate(self.cards):
-            if index < 2:
-                card.grid(row=index)  
-            elif index == 2:
+            if index < 3:
                 card.grid(column=0, row=index, pady=5, padx=10, in_=self.card_frame)
             else:
                 card.grid_forget()
 
-    
 
 class AddTaskButton(tk.Frame):
     def __init__(self, root):
@@ -208,6 +213,35 @@ class AddTaskButton(tk.Frame):
         submit_button.grid(row=5, column=0, columnspan=2)
 
         
+class LoadButton(tk.Frame):
+    def __init__(self, root):
+        super().__init__(root)
+        self.root = root
+        load_button = tk.Button(self, width=10, text="Load", font=("Arial", 12), bg="cornflowerblue", command=self.load)
+        load_button.grid(column=0, row=0)
+
+    def load(self):
+        task_manager.load()
+        for id, task in task_manager.get_tasks().items():
+            print(id, task)
+            if task.completed:
+                completed_category.add_card(TaskCard(self.root, task, id=id))
+            else:
+                print("NOT COMPLETE")
+                default_category.add_card(TaskCard(self.root, task, id=id))
+        print("LOAD!")
+
+class SaveButton(tk.Frame):
+    def __init__(self, root):
+        super().__init__(root)
+        self.root = root
+        load_button = tk.Button(self, width=10, text="Save", font=("Arial", 12), bg="cornflowerblue", command=self.save)
+        load_button.grid(column=0, row=0)
+
+    def save(self):
+        task_manager.save()
+        print("Save!")
+    
 
 # Create main application window
 root = tk.Tk()
@@ -217,38 +251,28 @@ root.title("Task Manager")
 add_button = AddTaskButton(root)
 add_button.grid(row=0, column=0, padx=20)
 
+save_button = SaveButton(root)
+save_button.grid(row=1, column=0, padx=20)
+
+load_button = LoadButton(root)
+load_button.grid(row=2, column=0, padx=20)
+
 default_category = CategoryContainer(root, "Default")
 default_category.grid(row=0, column=1, padx=30, pady=30)
 
 completed_category = CategoryContainer(root, "Completed")
 completed_category.grid(row=0, column=2, padx=30, pady=30)
 
-# Example Task Card
+# Example Task Cards
 default_category.add_card(TaskCard(root, Task("2450 HW", "Do Milestone 3", 0, "March 10", "School")))
 default_category.add_card(TaskCard(root, Task("2700 HW", "Do Simulations", 2, "March 11", "School")))
 default_category.add_card(TaskCard(root, Task("2010 HW", "Do Paper", 5, "March 12", "School")))
 
 root.mainloop()
+    
 
-# Create and display Task_Card inside root
-# card = TaskCard(root)
-# card.grid(padx=20, pady=20)  
 
-# card2 = TaskCard(root)
-# card2.grid(padx=30, pady=30) 
 
-# school = CategoryContainer(root, "School")
-# school.grid(row=0, column=0, padx=30, pady=30)
 
-# school.add_card(TaskCard(root, task1))
-# # school.add_card(TaskCard(root))
-# # school.add_card(TaskCard(root))
 
-# work = CategoryContainer(root, "Work")
-# work.grid(row=0, column=1, padx=30, pady=30)
-# work.add_card(TaskCard(root))
-# # work.add_card(TaskCard(root))
-# # work.add_card(TaskCard(root))
-
- 
 
