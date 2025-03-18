@@ -4,7 +4,7 @@ import os
 from task import Task
 
 class TaskMaster:
-    def __init__(self):
+    def __init__(self, saveLoc = "saves/"):
         self.tasks = {}  # Dictionary to store tasks
         self.task_id_counter = 1  # Auto-incrementing counter for task IDs
         self.save_loc = 'saves/'
