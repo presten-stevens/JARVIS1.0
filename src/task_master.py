@@ -6,7 +6,6 @@ from task import Task
 class TaskMaster:
     def __init__(self, saveLoc = "saves/"):
         self.tasks = {}  # Dictionary to store tasks
-        self.task_id_counter = 1  # Auto-incrementing counter for task IDs
         self.save_loc = 'saves/'
         self.save_dir = os.fsencode(self.save_loc)
 
@@ -16,11 +15,8 @@ class TaskMaster:
             Add a new task with a unique ID.
         """
         new_task = Task(title, description, priority, due_date, category, completed)
-        task_id = self.task_id_counter
-        self.tasks[task_id] = new_task
-        self.task_id_counter += 1
-        print(f"Task added with ID: {task_id}")
-        return task_id
+        self.tasks[new_task.id] = new_task
+        print(f"Task added with ID: {new_task.id}")
 
     def delete_task(self, task_id):
         """"
@@ -51,25 +47,45 @@ class TaskMaster:
     # Save Tasks as JSON
     def save(self):
         os.makedirs(self.save_loc, exist_ok=True)
-        for object in self.tasks.values():
+
+        #iterate through id and object pairs
+        for id, object in self.tasks.items():
+
             if isinstance(object, Task):
-                with open(self.save_loc + object.title.replace(" ", "-") + ".json", 'w') as file:
+
+                #dump task data to file
+                with open(self.save_loc + str(id) + "-" + object.title.replace(" ", "-") + ".json", 'w') as file:
                     json.dump(object.to_dict(), file)
 
     # Load Tasks from JSON
     def load(self):
+        #Verify that the path exists
         if not os.path.exists(self.save_loc):
             os.makedirs(self.save_loc, exist_ok=True)
             return
-        
+
+        #Clear task dictionary
         self.tasks = {}
-        for id, file_path in enumerate(os.listdir(self.save_dir)):
+
+        #Iterate through files
+        for file_path in os.listdir(self.save_dir):
+
+            #convert path to str
             file_path = str(file_path)
-            self.task_id_counter = id + 1
-            with open(self.save_loc + file_path[2:-1], 'r') as file:  # Open the file in read mode
-                data = json.load(file)  # Load the JSON data from the file
-                self.tasks[self.task_id_counter] = Task.from_dict(data)
-        self.task_id_counter += 1
+
+            #open file in read mode
+            with open(self.save_loc + file_path[2:-1], 'r') as file:
+                #load file data
+                data = json.load(file)
+
+                #create task from data dictionary
+                task = Task.from_dict(data)
+
+                #assign id/task key/value pair
+                self.tasks[task.id] = task
+
+        #Adjust counting ID for Task class
+        Task.set_class_id(max(self.tasks.keys()) + 1)
 
     def printf(self):
         print(self.tasks)
