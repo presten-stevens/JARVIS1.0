@@ -15,9 +15,9 @@ class TaskMaster:
         """"
             Add a new task with a unique ID.
         """
-        new_task = Task(title, description, priority, due_date, category, completed)
+        data = title, description, priority, due_date, category, completed
         task_id = self.task_id_counter
-        self.tasks[task_id] = new_task
+        self.tasks[self.task_id_counter] = Task.from_dict(data)
         self.task_id_counter += 1
         print(f"Task added with ID: {task_id}")
         return task_id

@@ -56,15 +56,15 @@ class TaskCard(tk.Frame):
         """Opens a pop-up window to edit the task details."""
         edit_window = tk.Toplevel(self.root)
         edit_window.title("Edit Task")
-        edit_window.geometry("300x200")
-        edit_window.configure(bg="white")
+        edit_window.geometry("300x250")
+        edit_window.configure(bg="darkorange")
 
-        tk.Label(edit_window, text="Edit Task Name:", bg="white").pack(pady=5)
+        tk.Label(edit_window, text="Edit Task Name:").pack(pady=5)
         name_entry = tk.Entry(edit_window)
         name_entry.insert(0, self.task.title)
         name_entry.pack(pady=5)
 
-        tk.Label(edit_window, text="Edit Due Date:", bg="white").pack(pady=5)
+        tk.Label(edit_window, text="Edit Due Date:").pack(pady=5)
         date_entry = tk.Entry(edit_window)
         date_entry.insert(0, self.task.due_date)
         date_entry.pack(pady=5)
@@ -74,8 +74,8 @@ class TaskCard(tk.Frame):
             new_due_date = date_entry.get()
             if new_title and new_due_date:
                 # Update task in the backend
-                task_manager.edit_task(self.id, "title", self.task.title)
-                task_manager.edit_task(self.id, "due_date", self.task.due_date)
+                task_manager.edit_task(self.id, "title", new_title)
+                task_manager.edit_task(self.id, "due_date", new_due_date)
 
                 # Refresh task in the frontend
                 self.update_task()
@@ -87,10 +87,10 @@ class TaskCard(tk.Frame):
                 edit_window.destroy()
                 print("Task updated!")
 
-        save_button = tk.Button(edit_window, text="Save", bg="green", fg="white", command=save_changes)
+        save_button = tk.Button(edit_window, text="Save", command=save_changes)
         save_button.pack(pady=10)
 
-        cancel_button = tk.Button(edit_window, text="Cancel", bg="red", fg="white", command=edit_window.destroy)
+        cancel_button = tk.Button(edit_window, text="Cancel", command=edit_window.destroy)
         cancel_button.pack(pady=5)
 
         print("Editing task...")
