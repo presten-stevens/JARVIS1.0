@@ -69,7 +69,6 @@ class TaskCard(tk.Frame):
 
                 task_manager.edit_task(self.task.id, "title", new_title)
                 task_manager.edit_task(self.task.id, "due_date", new_due_date)
-
                 # Refresh task in the frontend
                 self.update_idletasks()
 
