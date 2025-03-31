@@ -9,6 +9,7 @@ class TaskMaster:
         self.task_id_counter = 1  # Auto-incrementing counter for task IDs
         self.save_loc = 'saves/'
         self.save_dir = os.fsencode(self.save_loc)
+        self.custom_tags = []  # List to store custom tags
 
     def add_task(self, title: str, description: str, priority: int,
                 due_date: str, category: str, completed: bool = False):
@@ -48,13 +49,27 @@ class TaskMaster:
             print(f"Description: {task.description}")
             print("-" * 20)
 
+    def update_task_with_tag(self, task_id: int, tag: str):
+        if task_id in self.tasks:
+            task = self.tasks[task_id]
+            if tag not in task.tags:
+                task.add_tag(tag)
+                print(f"Task '{task.title}' updated with tag: {tag}")
+            else:
+                print(f"Task '{task.title}' already has tag: {tag}")
+        else:
+            print(f"Task with ID {task_id} not found.")
+
     # Save Tasks as JSON
     def save(self):
         os.makedirs(self.save_loc, exist_ok=True)
-        for object in self.tasks.values():
-            if isinstance(object, Task):
-                with open(self.save_loc + object.title.replace(" ", "-") + ".json", 'w') as file:
-                    json.dump(object.to_dict(), file)
+        for task in self.tasks.values():
+            if isinstance(task, Task):
+                # Save each task as a separate JSON file
+                file_name = task.title.replace(' ', '-') + '.json'
+                file_path = os.path.join(self.save_loc, file_name)
+                with open(file_path, 'w') as file:
+                    json.dump(task.to_dict(), file)
 
     # Load Tasks from JSON
     def load(self):
@@ -93,3 +108,11 @@ class TaskMaster:
     
     def get_tasks(self):
         return self.tasks
+    
+    # Filter Tasks
+    def filter_tasks_by_priority(self, priority):
+        """Return a list of tasks with the given priority."""
+        return [task for task in self.tasks if task.priority == priority]
+    def filter_tasks_by_tag(self, tag):
+        """Return a list of tasks that contain the given tag."""
+        return [task for task in self.tasks if tag in task.tags]
