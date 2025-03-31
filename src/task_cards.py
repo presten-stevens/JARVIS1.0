@@ -330,7 +330,7 @@ completed_category = CategoryContainer(root, "Completed")
 completed_category.grid(row=0, column=2, padx=30, pady=30)
 
 task_manager.load()
-for task in task_manager.get_tasks().values():
+for task in task_manager.sort_tasks():
     if task.completed:
         completed_category.add_card(TaskCard(root, task))
     else:
