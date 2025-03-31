@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from task import Task
 from task_master import TaskMaster
+import tkinter.simpledialog as simpledialog
 
 task_manager = TaskMaster()
 
@@ -34,6 +35,18 @@ class TaskCard(tk.Frame):
         self.delete = tk.Button(self, width=5, text="Delete", font=("Arial", 12), bg="azure4", command=self.on_delete_click)
         self.edit.grid(column=0, row=4)
         self.delete.grid(column=1, row=4)
+
+        self.add_tag_button = tk.Button(self, text="Add Tag", font=("Arial", 10), bg="lightgreen", command=self.on_add_tag_click)
+        self.add_tag_button.grid(column=0, row=5, columnspan=2, pady=5)
+
+        self.attached_tags_label = tk.Label(self, text="Tags: None", font=("Arial", 10), bg="lightblue", anchor='w')
+        self.attached_tags_label.grid(column=0, row=6, columnspan=2, sticky='w', pady=(5, 0))
+        
+        # Initialize tag display
+        self.update_tags_label()
+
+    def update_task(self):
+        self.task = task_manager.get_task(self.id)
 
     def on_complete_click(self):
         if self.task.completed:
@@ -97,6 +110,31 @@ class TaskCard(tk.Frame):
         self.task = None
         print("Task Deleted")
     
+    def on_add_tag_click(self):
+        tag_window = tk.Toplevel(self.root)
+        tag_window.title("Add Tag")
+        tag_window.geometry("300x150")
+        
+        tk.Label(tag_window, text="Tag Title:").pack(pady=5)
+        title_entry = tk.Entry(tag_window)
+        title_entry.pack(pady=5)
+        
+        def add_tag():
+            title = title_entry.get().strip()
+            if title:
+                self.task.add_tag(title)
+                # Update backend
+                task_manager.update_task_with_tag(self.id, title)
+                self.update_tags_label()
+                tag_window.destroy()
+        
+        tk.Button(tag_window, text="Add Tag", command=add_tag).pack(pady=10)
+    
+    def update_tags_label(self):
+        if self.task.tags:
+            self.attached_tags_label.config(text="Tags: " + ", ".join(self.task.tags))
+        else:
+            self.attached_tags_label.config(text="Tags: None")
 
 class CategoryContainer(tk.Frame):
     INTERIOR_PADDING = (20, 20)
@@ -274,10 +312,3 @@ for task in task_manager.sort_tasks():
 root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))
 
 root.mainloop()
-    
-
-
-
-
-
-

@@ -2,7 +2,7 @@ class Task:
     class_id = 0
 
     def __init__(self, title: str, description: str, priority: int,
-                due_date: str, category: str, completed: bool = False, id = None):
+                due_date: str, category: str, completed: bool = False, tags: list = None):
         self.title = title
         self.description = description
         self.priority = priority
@@ -14,6 +14,15 @@ class Task:
         else:
             self.id = id
         Task.class_id += 1
+        self.tags = tags if tags is not None else []
+
+        if id == None:
+            self.id = Task.class_id
+        else:
+            self.id = id
+        Task.class_id += 1
+
+        self.tags = tags if tags is not None else []
 
     def __str__(self):
         return (f"Title: {self.title}\n"
@@ -23,6 +32,7 @@ class Task:
             f"Category: {self.category}\n"
             f"Completed: {self.completed}\n"
             f"Id: {self.id}"
+            f"Tags: {', '.join(self.tags)}\n"
         )
 
     def __repr__(self):
@@ -49,6 +59,14 @@ class Task:
     def set_id(self, id: int):
         self.id = id
 
+    def add_tag(self, tags: str):
+        if tags not in self.tags:
+            self.tags.append(tags)
+
+    def remove_tag(self, tags: str):
+        if tags in self.tags:
+            self.tags.remove(tags)
+
     def to_dict(self):
         return {
             'title': self.title,
@@ -57,7 +75,8 @@ class Task:
             'due_date': self.due_date,
             'category': self.category,
             'completed': self.completed,
-            'id': self.id
+            'id': self.id,
+            'tags': self.tags
         }
 
     # Method to create a Task instance from a dictionary
@@ -70,7 +89,7 @@ class Task:
             task_dict['due_date'],
             task_dict['category'],
             task_dict['completed'],
-            task_dict['id']
+            task_dict.get('tags', [])
         )
 
     @classmethod
