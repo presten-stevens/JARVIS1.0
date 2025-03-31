@@ -1,19 +1,16 @@
 import tkinter as tk
+from tkinter import messagebox
 from task import Task
 from task_master import TaskMaster
 
 task_manager = TaskMaster()
 
 class TaskCard(tk.Frame):
-    def __init__(self, root, task: Task, id: int = None):
+    def __init__(self, root, task: Task):
         super().__init__(root)  # Initialize the parent Frame
         self.root = root
-        if id:
-            self.id = id
-            print("IDIDDDDDDDDDDDDDDd")
-        else:
-            self.id = task_manager.add_task(task.title, task.description, task.priority, task.due_date, task.category, task.completed)
-        self.update_task()
+        self.task = task
+        task_manager.add_task(task)
 
         # Create a frame inside Task_Card
         self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  # Set background and padding
@@ -38,16 +35,11 @@ class TaskCard(tk.Frame):
         self.edit.grid(column=0, row=4)
         self.delete.grid(column=1, row=4)
 
-    def update_task(self):
-        self.task = task_manager.get_task(self.id)
-
     def on_complete_click(self):
         if self.task.completed:
             return 
         
-        task_manager.edit_task(self.id, "completed", "True")
-        self.update_task()
-
+        task_manager.edit_task(self.task.id, "completed", "True")
         default_category.remove_card(self)
         completed_category.add_card(self)
         print("Task Completed")
@@ -74,11 +66,11 @@ class TaskCard(tk.Frame):
             new_due_date = date_entry.get()
             if new_title and new_due_date:
                 # Update task in the backend
-                task_manager.edit_task(self.id, "title", self.task.title)
-                task_manager.edit_task(self.id, "due_date", self.task.due_date)
+                task_manager.edit_task(self.task.id, "title", new_title)
+                task_manager.edit_task(self.task.id, "due_date", new_due_date)
 
                 # Refresh task in the frontend
-                self.update_task()
+                self.update_idletasks()
 
                 # Update UI labels
                 self.task_name.config(text=new_title)
@@ -96,7 +88,7 @@ class TaskCard(tk.Frame):
         print("Editing task...")
 
     def on_delete_click(self):
-        task_manager.delete_task(self.id)
+        task_manager.delete_task(self.task.id)
         if self.task.completed:
             completed_category.remove_card(self)
         else:
@@ -148,6 +140,7 @@ class CategoryContainer(tk.Frame):
         card.grid_forget()  
         self.cards.remove(card)  
         self.rearrange_cards()
+        self.update_idletasks()
 
     def rearrange_cards(self):
         for index, card in enumerate(self.cards):
@@ -155,13 +148,14 @@ class CategoryContainer(tk.Frame):
                 card.grid(column=0, row=index, pady=5, padx=10, in_=self.card_frame)
             else:
                 card.grid_forget()
+        self.update_idletasks()
 
 
 class AddTaskButton(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
         self.root = root
-        complete = tk.Button(self, width=10, text="Add Task", font=("Arial", 12), bg="cornflowerblue", command=self.on_click)
+        complete = tk.Button(self, width=10, text="Add Task", font=("Arial", 12), bg="cornflowerblue", command= self.on_click)
         complete.grid(column=0, row=0)
 
     def on_click(self):
@@ -222,26 +216,37 @@ class LoadButton(tk.Frame):
 
     def load(self):
         task_manager.load()
-        for id, task in task_manager.get_tasks().items():
+        for task in task_manager.get_tasks().values():
             print(id, task)
             if task.completed:
-                completed_category.add_card(TaskCard(self.root, task, id=id))
+                completed_category.add_card(TaskCard(self.root, task))
             else:
                 print("NOT COMPLETE")
-                default_category.add_card(TaskCard(self.root, task, id=id))
+                default_category.add_card(TaskCard(self.root, task))
         print("LOAD!")
 
-class SaveButton(tk.Frame):
-    def __init__(self, root):
-        super().__init__(root)
-        self.root = root
-        load_button = tk.Button(self, width=10, text="Save", font=("Arial", 12), bg="cornflowerblue", command=self.save)
-        load_button.grid(column=0, row=0)
+    class SaveButton(tk.Frame):
+        def __init__(self, root):
+            super().__init__(root)
+            self.root = root
+            load_button = tk.Button(self, width=10, text="Save", font=("Arial", 12), bg="cornflowerblue", command=self.save)
+            load_button.grid(column=0, row=0)
 
-    def save(self):
-        task_manager.save()
-        print("Save!")
+        def save(self):
+            task_manager.save()
+            print("Save!")
+
+def on_close(root):
+    # Create a confirmation window (popup)
+    result = tk.messagebox.askyesno("Save Changes", "Do you want to save your changes?")
     
+    # If the user clicks "Yes", run the save function
+    if result:
+        task_manager.save()
+        root.quit()  # Close the main window
+    else:
+        root.quit()  # Close the window without saving
+
 
 # Create main application window
 root = tk.Tk()
@@ -251,22 +256,22 @@ root.title("Task Manager")
 add_button = AddTaskButton(root)
 add_button.grid(row=0, column=0, padx=20)
 
-save_button = SaveButton(root)
-save_button.grid(row=1, column=0, padx=20)
-
-load_button = LoadButton(root)
-load_button.grid(row=2, column=0, padx=20)
-
 default_category = CategoryContainer(root, "Default")
 default_category.grid(row=0, column=1, padx=30, pady=30)
 
 completed_category = CategoryContainer(root, "Completed")
 completed_category.grid(row=0, column=2, padx=30, pady=30)
 
-# Example Task Cards
-default_category.add_card(TaskCard(root, Task("2450 HW", "Do Milestone 3", 0, "March 10", "School")))
-default_category.add_card(TaskCard(root, Task("2700 HW", "Do Simulations", 2, "March 11", "School")))
-default_category.add_card(TaskCard(root, Task("2010 HW", "Do Paper", 5, "March 12", "School")))
+task_manager.load()
+for task in task_manager.get_tasks().values():
+    print(id, task)
+    if task.completed:
+        completed_category.add_card(TaskCard(root, task))
+    else:
+        print("NOT COMPLETE")
+        default_category.add_card(TaskCard(root, task))
+
+root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))
 
 root.mainloop()
     
