@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from task import Task
 from task_master import TaskMaster
+import tkinter.simpledialog as simpledialog
 
 task_manager = TaskMaster()
 
@@ -35,6 +36,18 @@ class TaskCard(tk.Frame):
         self.edit.grid(column=0, row=4)
         self.delete.grid(column=1, row=4)
 
+        self.add_tag_button = tk.Button(self, text="Add Tag", font=("Arial", 10), bg="lightgreen", command=self.on_add_tag_click)
+        self.add_tag_button.grid(column=0, row=5, columnspan=2, pady=5)
+
+        self.attached_tags_label = tk.Label(self, text="Tags: None", font=("Arial", 10), bg="lightblue", anchor='w')
+        self.attached_tags_label.grid(column=0, row=6, columnspan=2, sticky='w', pady=(5, 0))
+        
+        # Initialize tag display
+        self.update_tags_label()
+
+    def update_task(self):
+        self.task = task_manager.get_task(self.id)
+
     def on_complete_click(self):
         if self.task.completed:
             return 
@@ -48,15 +61,15 @@ class TaskCard(tk.Frame):
         """Opens a pop-up window to edit the task details."""
         edit_window = tk.Toplevel(self.root)
         edit_window.title("Edit Task")
-        edit_window.geometry("300x200")
-        edit_window.configure(bg="white")
+        edit_window.geometry("300x250")
+        edit_window.configure(bg="darkorange")
 
-        tk.Label(edit_window, text="Edit Task Name:", bg="white").pack(pady=5)
+        tk.Label(edit_window, text="Edit Task Name:").pack(pady=5)
         name_entry = tk.Entry(edit_window)
         name_entry.insert(0, self.task.title)
         name_entry.pack(pady=5)
 
-        tk.Label(edit_window, text="Edit Due Date:", bg="white").pack(pady=5)
+        tk.Label(edit_window, text="Edit Due Date:").pack(pady=5)
         date_entry = tk.Entry(edit_window)
         date_entry.insert(0, self.task.due_date)
         date_entry.pack(pady=5)
@@ -79,10 +92,10 @@ class TaskCard(tk.Frame):
                 edit_window.destroy()
                 print("Task updated!")
 
-        save_button = tk.Button(edit_window, text="Save", bg="green", fg="white", command=save_changes)
+        save_button = tk.Button(edit_window, text="Save", command=save_changes)
         save_button.pack(pady=10)
 
-        cancel_button = tk.Button(edit_window, text="Cancel", bg="red", fg="white", command=edit_window.destroy)
+        cancel_button = tk.Button(edit_window, text="Cancel", command=edit_window.destroy)
         cancel_button.pack(pady=5)
 
         print("Editing task...")
@@ -97,6 +110,31 @@ class TaskCard(tk.Frame):
         self.task = None
         print("Task Deleted")
     
+    def on_add_tag_click(self):
+        tag_window = tk.Toplevel(self.root)
+        tag_window.title("Add Tag")
+        tag_window.geometry("300x150")
+        
+        tk.Label(tag_window, text="Tag Title:").pack(pady=5)
+        title_entry = tk.Entry(tag_window)
+        title_entry.pack(pady=5)
+        
+        def add_tag():
+            title = title_entry.get().strip()
+            if title:
+                self.task.add_tag(title)
+                # Update backend
+                task_manager.update_task_with_tag(self.id, title)
+                self.update_tags_label()
+                tag_window.destroy()
+        
+        tk.Button(tag_window, text="Add Tag", command=add_tag).pack(pady=10)
+    
+    def update_tags_label(self):
+        if self.task.tags:
+            self.attached_tags_label.config(text="Tags: " + ", ".join(self.task.tags))
+        else:
+            self.attached_tags_label.config(text="Tags: None")
 
 class CategoryContainer(tk.Frame):
     INTERIOR_PADDING = (20, 20)

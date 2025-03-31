@@ -2,13 +2,14 @@ class Task:
     class_id = 0
 
     def __init__(self, title: str, description: str, priority: int,
-                due_date: str, category: str, completed: bool = False, id = None):
+                due_date: str, category: str, completed: bool = False, tags: list = None, id = None):
         self.title = title
         self.description = description
         self.priority = priority
         self.due_date = due_date
         self.category = category
         self.completed = completed
+        self.tags = tags if tags is not None else []
         if id == None:
             self.id = Task.class_id
         else:
@@ -22,6 +23,7 @@ class Task:
             f"Due Date: {self.due_date}\n"
             f"Category: {self.category}\n"
             f"Completed: {self.completed}\n"
+            f"Tags: {', '.join(self.tags)}\n"
             f"Id: {self.id}"
         )
 
@@ -46,6 +48,14 @@ class Task:
     def set_completed(self, completed: bool):
         self.completed = completed
 
+    def add_tag(self, tags: str):
+        if tags not in self.tags:
+            self.tags.append(tags)
+
+    def remove_tag(self, tags: str):
+        if tags in self.tags:
+            self.tags.remove(tags)
+
     def set_id(self, id: int):
         self.id = id
 
@@ -57,6 +67,7 @@ class Task:
             'due_date': self.due_date,
             'category': self.category,
             'completed': self.completed,
+            'tags': self.tags,
             'id': self.id
         }
 
@@ -70,6 +81,7 @@ class Task:
             task_dict['due_date'],
             task_dict['category'],
             task_dict['completed'],
+            task_dict.get('tags', []),
             task_dict['id']
         )
 

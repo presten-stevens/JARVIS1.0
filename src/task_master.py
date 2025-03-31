@@ -7,13 +7,18 @@ class TaskMaster:
         self.tasks = {}  # Dictionary to store tasks
         self.save_loc = saveLoc
         self.save_dir = os.fsencode(self.save_loc)
+        self.custom_tags = []  # List to store custom tags
 
     def add_task(self, new_task: Task):
         """
             Add a new task with a unique ID.
         """
-        self.tasks[new_task.id] = new_task
-        print(f"Task added with ID: {new_task.id}")
+        data = title, description, priority, due_date, category, completed
+        task_id = self.task_id_counter
+        self.tasks[self.task_id_counter] = Task.from_dict(data)
+        self.task_id_counter += 1
+        print(f"Task added with ID: {task_id}")
+        return task_id
 
     def delete_task(self, task_id):
         """"
@@ -41,6 +46,17 @@ class TaskMaster:
             print(f"Name: {task.title}")
             print(f"Description: {task.description}")
             print("-" * 20)
+
+    def update_task_with_tag(self, task_id: int, tag: str):
+        if task_id in self.tasks:
+            task = self.tasks[task_id]
+            if tag not in task.tags:
+                task.add_tag(tag)
+                print(f"Task '{task.title}' updated with tag: {tag}")
+            else:
+                print(f"Task '{task.title}' already has tag: {tag}")
+        else:
+            print(f"Task with ID {task_id} not found.")
 
     # Save Tasks as JSON
     def save(self):
@@ -117,3 +133,11 @@ class TaskMaster:
 
     def get_tasks(self):
         return self.tasks
+    
+    # Filter Tasks
+    def filter_tasks_by_priority(self, priority):
+        """Return a list of tasks with the given priority."""
+        return [task for task in self.tasks if task.priority == priority]
+    def filter_tasks_by_tag(self, tag):
+        """Return a list of tasks that contain the given tag."""
+        return [task for task in self.tasks if tag in task.tags]
