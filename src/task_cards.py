@@ -14,10 +14,11 @@ class TaskCard(tk.Frame):
         self.task = task
         task_manager.add_task(task)
 
-        # Create a frame inside Task_Card
         self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  # Set background and padding
-        
-        # Create a label inside the frame for visibility
+        self.initialize_elements()
+
+    
+    def initialize_elements(self):
         self.task_name = tk.Label(self, text=self.task.title, font=( "Arial", 24), bg="lightblue")  
         self.task_name.grid(column=0,row=0,columnspan=2)
 
@@ -29,34 +30,56 @@ class TaskCard(tk.Frame):
 
         self.canvas.create_line(10, 2, 230, 2, fill="black", width=2)
 
+        self.show_more = tk.Button(self, width=10, text="Show More", font=("Arial", 12), bg="lightgreen", command=self.on_show_more_click)
+        self.show_more.grid(column=0, row=3, columnspan=2)
+
+
+    def on_show_more_click(self):
+        self.show_more.destroy()
+
         self.complete = tk.Button(self, width=10, text="Complete", font=("Arial", 12), bg="green", command=self.on_complete_click)
         self.complete.grid(column=0, row=3, columnspan=2)
-        
+
         self.edit = tk.Button(self, width=5, text="Edit", font=("Arial", 12), bg="azure4", fg="black", command=self.on_edit_click)
+        self.edit.grid(column=0, row=4, pady=5)
+
         self.delete = tk.Button(self, width=5, text="Delete", font=("Arial", 12), bg="azure4", command=self.on_delete_click)
-        self.edit.grid(column=0, row=4)
         self.delete.grid(column=1, row=4)
 
-        self.add_tag_button = tk.Button(self, text="Add Tag", font=("Arial", 10), bg="lightgreen", command=self.on_add_tag_click)
-        self.add_tag_button.grid(column=0, row=5, columnspan=2, pady=5)
+        self.add_tag = tk.Button(self, text="Add Tag", font=("Arial", 10), bg="lightgreen", command=self.on_add_tag_click)
+        self.add_tag.grid(column=0, row=5, columnspan=1)
 
-        self.attached_tags_label = tk.Label(self, text="Tags: None", font=("Arial", 10), bg="lightblue", anchor='w')
-        self.attached_tags_label.grid(column=0, row=6, columnspan=2, sticky='w', pady=(5, 0))
-        
-        # Initialize tag display
+        self.show_less = tk.Button(self, text="Show Less", font=("Arial", 10), bg="lightgreen", command=self.on_show_less_click)
+        self.show_less.grid(column=1, row=5, columnspan=1)
+
+        self.attached_tags_label = tk.Label(self, text="Tags: None", font=("Arial", 10), bg="lightblue", anchor='w', wraplength=150)
+        self.attached_tags_label.grid(column=0, row=6, columnspan=2, sticky='w')
         self.update_tags_label()
+
+
+    def on_show_less_click(self):
+        self.complete.destroy()
+        self.edit.destroy()
+        self.delete.destroy()
+        self.add_tag.destroy()
+        self.show_less.destroy()
+        self.attached_tags_label.destroy()
+        self.initialize_elements()
+        
 
     def update_task(self):
         self.task = task_manager.get_task(self.id)
 
+
     def on_complete_click(self):
+        self.on_show_less_click()
         if self.task.completed:
-            return 
+            return
         
         task_manager.edit_task(self.task.id, "completed", "True")
         default_category.remove_card(self)
         completed_category.add_card(self)
-        print("Task Completed")
+                    
 
     def on_edit_click(self):
         """Opens a pop-up window to edit the task details."""
@@ -75,7 +98,7 @@ class TaskCard(tk.Frame):
         date_entry.insert(0, self.task.due_date)
         date_entry.pack(pady=5)
 
-        def save_changes():
+        def save_changes(event=None):
             new_title = name_entry.get()
             new_due_date = date_entry.get()
             if new_title and new_due_date:
@@ -92,6 +115,8 @@ class TaskCard(tk.Frame):
 
                 edit_window.destroy()
                 print("Task updated!")
+
+        edit_window.bind("<Return>", save_changes)
 
         save_button = tk.Button(edit_window, text="Save", command=save_changes)
         save_button.pack(pady=10)
@@ -120,7 +145,7 @@ class TaskCard(tk.Frame):
         title_entry = tk.Entry(tag_window)
         title_entry.pack(pady=5)
         
-        def add_tag():
+        def add_tag(event=None):
             title = title_entry.get().strip()
             if title:
                 self.task.add_tag(title)
@@ -129,6 +154,7 @@ class TaskCard(tk.Frame):
                 self.update_tags_label()
                 tag_window.destroy()
         
+        tag_window.bind("<Return>", add_tag)
         tk.Button(tag_window, text="Add Tag", command=add_tag).pack(pady=10)
     
     def update_tags_label(self):
@@ -205,7 +231,7 @@ class AddTaskButton(tk.Frame):
         description = tk.StringVar()
         priority = tk.StringVar()
         due_date = tk.StringVar()
-        category = tk.StringVar()
+        tags = tk.StringVar()
 
         title_label = tk.Label(input_window, text = 'Title')
         title_entry = tk.Entry(input_window, textvariable=title)
@@ -219,11 +245,12 @@ class AddTaskButton(tk.Frame):
         due_date_label = tk.Label(input_window, text='Due Date')
         due_date_entry = tk.Entry(input_window, textvariable=due_date)
 
-        category_label = tk.Label(input_window, text='Category')
-        category_entry = tk.Entry(input_window, textvariable=category)
+        tags_label = tk.Label(input_window, text='Tags')
+        tags_entry = tk.Entry(input_window, textvariable=tags)
 
-        def submit():
-            default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(), category.get())))
+        def submit(event=None):
+            default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(),
+                                                           tags=[tag.strip() for tag in tags.get().split(',')])))
             input_window.destroy()
 
         submit_button = tk.Button(input_window, text = 'Submit', command=submit)
@@ -240,10 +267,12 @@ class AddTaskButton(tk.Frame):
         due_date_label.grid(row=3, column=0)
         due_date_entry.grid(row=3, column=1)
 
-        category_label.grid(row=4, column=0)
-        category_entry.grid(row=4, column=1)
+        tags_label.grid(row=4, column=0)
+        tags_entry.grid(row=4, column=1)
 
         submit_button.grid(row=5, column=0, columnspan=2)
+
+        input_window.bind("<Return>", submit)
 
         
 class LoadButton(tk.Frame):
@@ -256,13 +285,11 @@ class LoadButton(tk.Frame):
     def load(self):
         task_manager.load()
         for task in task_manager.get_tasks().values():
-            print(task.id, task)
             if task.completed:
                 completed_category.add_card(TaskCard(self.root, task))
             else:
-                print("NOT COMPLETE")
                 default_category.add_card(TaskCard(self.root, task))
-        print("LOAD!")
+        print("Tasks Loaded Successfully!")
 
     class SaveButton(tk.Frame):
         def __init__(self, root):
@@ -303,11 +330,9 @@ completed_category.grid(row=0, column=2, padx=30, pady=30)
 
 task_manager.load()
 for task in task_manager.get_tasks().values():
-    print(task.id, task)
     if task.completed:
         completed_category.add_card(TaskCard(root, task))
     else:
-        print("NOT COMPLETE")
         default_category.add_card(TaskCard(root, task))
 
 root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))

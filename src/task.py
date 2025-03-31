@@ -2,7 +2,7 @@ class Task:
     class_id = 0
 
     def __init__(self, title: str, description: str, priority: int,
-                due_date: str, category: str, completed: bool = False, tags: list = None, id = None):
+                due_date: str, category: str = None, completed: bool = False, tags: list = None, id = None):
         self.title = title
         self.description = description
         self.priority = priority
