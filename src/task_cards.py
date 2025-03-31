@@ -61,25 +61,23 @@ class TaskCard(tk.Frame):
         date_entry.insert(0, self.task.due_date)
         date_entry.pack(pady=5)
 
-    def save_changes():
-        new_title = name_entry.get()
-        new_due_date = date_entry.get()
-        if new_title and new_due_date:
-            # Update task in the backend
-            task_manager.edit_task(self.task.id, "title", new_title)  # Update with new title
-            task_manager.edit_task(self.task.id, "due_date", new_due_date)  # Update with new due date
+        def save_changes():
+            new_title = name_entry.get()
+            new_due_date = date_entry.get()
+            if new_title and new_due_date:
+                # Update task in the backend
+                task_manager.edit_task(self.task.id, "title", new_title)
+                task_manager.edit_task(self.task.id, "due_date", new_due_date)
 
-            # Update task object
-            self.task.title = new_title
-            self.task.due_date = new_due_date
+                # Refresh task in the frontend
+                self.update_idletasks()
 
-            # Update UI labels
-            self.task_name.config(text=new_title)
-            self.due_date.config(text=new_due_date)
+                # Update UI labels
+                self.task_name.config(text=new_title)
+                self.due_date.config(text=new_due_date)
 
-            edit_window.destroy()
-            print("Task updated!")
-            self.update_idletasks()
+                edit_window.destroy()
+                print("Task updated!")
 
         save_button = tk.Button(edit_window, text="Save", bg="green", fg="white", command=save_changes)
         save_button.pack(pady=10)
