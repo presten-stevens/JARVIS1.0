@@ -122,7 +122,6 @@ class TaskMaster:
             raise Exception(f"Variable '{target_var}' not valid Task attribute")
 
         setattr(task, target_var, revision)
-        print(task)
 
     def get_task(self, task_id: int):
         if task_id is not None:
