@@ -89,7 +89,7 @@ class Task:
             task_dict['due_date'],
             task_dict['category'],
             task_dict['completed'],
-            task_dict.get('tags', [])
+            task_dict['tags']
         )
 
     @classmethod
