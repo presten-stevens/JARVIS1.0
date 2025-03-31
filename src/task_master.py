@@ -1,12 +1,11 @@
 import json
-# from os import fsencode, listdir, makedirs
 import os
 from task import Task
 
 class TaskMaster:
-    def __init__(self, saveLoc = "saves/"):
+    def __init__(self, saveLoc = 'saves/'):
         self.tasks = {}  # Dictionary to store tasks
-        self.save_loc = 'saves/'
+        self.save_loc = saveLoc
         self.save_dir = os.fsencode(self.save_loc)
 
     def add_task(self, new_task: Task):
@@ -18,13 +17,14 @@ class TaskMaster:
 
     def delete_task(self, task_id):
         """"
-            Delete a task by its ID.
+            Delete a task by its ID. And delete it from the save folder
         """
         if task_id in self.tasks:
             del self.tasks[task_id]
             print(f"Task with ID {task_id} deleted.")
         else:
             print(f"Task with ID {task_id} not found.")
+
 
     def view_tasks(self):
         """"
@@ -46,12 +46,20 @@ class TaskMaster:
     def save(self):
         os.makedirs(self.save_loc, exist_ok=True)
 
+        #clear directory and rewrite each task including edits to new files
+        for item in os.listdir(self.save_loc):
+            file_path = os.path.join(self.save_loc, item)
+
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
         #iterate through id and object pairs
         for id, object in self.tasks.items():
-            #dump task data to file
 
+            #dump task data to file
             with open(self.save_loc + str(object.id) + "-" + object.title.replace(" ", "-") + ".json", 'w') as file:
                 json.dump(object.to_dict(), file)
+        print("Saved")
 
     # Load Tasks from JSON
     def load(self):

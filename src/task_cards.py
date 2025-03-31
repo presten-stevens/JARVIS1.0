@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from task import Task
 from task_master import TaskMaster
 
@@ -226,17 +227,28 @@ class LoadButton(tk.Frame):
                 default_category.add_card(TaskCard(self.root, task))
         print("LOAD!")
 
-class SaveButton(tk.Frame):
-    def __init__(self, root):
-        super().__init__(root)
-        self.root = root
-        load_button = tk.Button(self, width=10, text="Save", font=("Arial", 12), bg="cornflowerblue", command=self.save)
-        load_button.grid(column=0, row=0)
+    class SaveButton(tk.Frame):
+        def __init__(self, root):
+            super().__init__(root)
+            self.root = root
+            load_button = tk.Button(self, width=10, text="Save", font=("Arial", 12), bg="cornflowerblue", command=self.save)
+            load_button.grid(column=0, row=0)
 
-    def save(self):
-        task_manager.save()
-        print("Save!")
+        def save(self):
+            task_manager.save()
+            print("Save!")
+
+def on_close(root):
+    # Create a confirmation window (popup)
+    result = tk.messagebox.askyesno("Save Changes", "Do you want to save your changes?")
     
+    # If the user clicks "Yes", run the save function
+    if result:
+        task_manager.save()
+        root.quit()  # Close the main window
+    else:
+        root.quit()  # Close the window without saving
+
 
 # Create main application window
 root = tk.Tk()
@@ -246,17 +258,22 @@ root.title("Task Manager")
 add_button = AddTaskButton(root)
 add_button.grid(row=0, column=0, padx=20)
 
-save_button = SaveButton(root)
-save_button.grid(row=1, column=0, padx=20)
-
-load_button = LoadButton(root)
-load_button.grid(row=2, column=0, padx=20)
-
 default_category = CategoryContainer(root, "Default")
 default_category.grid(row=0, column=1, padx=30, pady=30)
 
 completed_category = CategoryContainer(root, "Completed")
 completed_category.grid(row=0, column=2, padx=30, pady=30)
+
+task_manager.load()
+for task in task_manager.get_tasks().values():
+    print(id, task)
+    if task.completed:
+        completed_category.add_card(TaskCard(root, task))
+    else:
+        print("NOT COMPLETE")
+        default_category.add_card(TaskCard(root, task))
+
+root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))
 
 root.mainloop()
     
