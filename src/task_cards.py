@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 from task import Task
 from task_master import TaskMaster
+from abc import ABC, abstractmethod
+from datetime import datetime
 
 task_manager = TaskMaster()
 
@@ -96,7 +98,7 @@ class TaskCard(tk.Frame):
 
         self.task = None
         print("Task Deleted")
-    
+
 
 class CategoryContainer(tk.Frame):
     INTERIOR_PADDING = (20, 20)
@@ -151,6 +153,48 @@ class CategoryContainer(tk.Frame):
         self.update_idletasks()
 
 
+class InputChecker(ABC):
+    @abstractmethod
+    def checkObject(self):
+        pass
+
+class CheckTitle(InputChecker):
+    def checkObject(self, title):
+        if title == "":
+            return False 
+        else:
+            return True 
+        
+class CheckDescription(InputChecker):
+    def checkObject(self, description):
+        if description == "":
+            return False
+        else:
+            return True 
+
+class CheckPriority(InputChecker):
+    def checkObject(self, priority):
+        if( not priority.isdigit() or not int(priority) > 0):
+            return False
+        else:
+            return True 
+        
+class CheckDate(InputChecker):
+    def checkObject(self, date):
+        format = "%d-%m-%Y"
+        try: 
+            result = bool(datetime.strptime(date, format))
+        except ValueError:
+            result = False
+        return result
+
+class CheckCategory(InputChecker):
+    def checkObject(self, Category):
+        if(Category == ""):
+            return False
+        else:
+            return True
+
 class AddTaskButton(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
@@ -184,8 +228,46 @@ class AddTaskButton(tk.Frame):
         category_entry = tk.Entry(input_window, textvariable=category)
 
         def submit():
-            default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(), category.get())))
-            input_window.destroy()
+            title_checker = CheckTitle()
+            description_checker = CheckDescription()
+            priority_checker = CheckPriority()
+            date_checker = CheckDate()
+            category_checker = CheckCategory()
+
+            valid = True
+
+            if not title_checker.checkObject(title.get()):
+                title_entry.config(bg="red")
+                valid = False
+            else:
+                title_entry.config(bg="white")
+
+            if not description_checker.checkObject(description.get()):
+                description_entry.config(bg="red")
+                valid = False
+            else:
+                description_entry.config(bg="white")
+
+            if not priority_checker.checkObject(priority.get()):
+                priority_entry.config(bg="red")
+                valid = False
+            else:
+                priority_entry.config(bg="white")
+
+            if not date_checker.checkObject(due_date.get()):
+                due_date_entry.config(bg="red")
+                valid = False
+            else:
+                due_date_entry.config(bg="white")
+
+            if not category_checker.checkObject(category.get()):
+                category_entry.config(bg="red")
+                valid = False
+            else:
+                category_entry.config(bg="white")
+            if valid:
+                default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(), category.get())))
+                input_window.destroy()
 
         submit_button = tk.Button(input_window, text = 'Submit', command=submit)
 
@@ -205,6 +287,7 @@ class AddTaskButton(tk.Frame):
         category_entry.grid(row=4, column=1)
 
         submit_button.grid(row=5, column=0, columnspan=2)
+
 
         
 class LoadButton(tk.Frame):
