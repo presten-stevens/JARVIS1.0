@@ -7,17 +7,48 @@ from datetime import datetime
 
 task_manager = TaskMaster()
 
+class Editer(ABC):
+    """Helps edit cards or add new cards"""
+    @abstractmethod
+    def information(self):
+        pass
+
+class EditCard(Editer):
+    def __init__(self, task, task_card):
+        self.task = task
+        self.task_card = task_card
+
+    def information(self, root, name_entry, description_entry, priority_entry, date_entry, category_entry):
+        new_title = name_entry
+        new_due_date = date_entry
+        new_priority = priority_entry
+        new_category = category_entry
+        new_description = description_entry
+
+        if new_title and new_due_date:
+            task_manager.edit_task(self.task.id, "title", new_title)
+            task_manager.edit_task(self.task.id, "due_date", new_due_date)
+            task_manager.edit_task(self.task.id, "priority", new_priority)
+            task_manager.edit_task(self.task.id, "category", new_category)
+            task_manager.edit_task(self.task.id, "description", new_description)
+
+            # Refresh UI after edit
+            self.task_card.refresh()
+
+class NewCard(Editer):
+    def information(self, root, title, description, priority, due_date, category):
+        default_category.add_card(TaskCard(root, Task(title, description, priority, due_date, category))) 
+
+
 class TaskCard(tk.Frame):
     def __init__(self, root, task: Task):
-        super().__init__(root)  # Initialize the parent Frame
+        super().__init__(root)  
         self.root = root
         self.task = task
         task_manager.add_task(task)
 
-        # Create a frame inside Task_Card
         self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  # Set background and padding
         
-        # Create a label inside the frame for visibility
         self.task_name = tk.Label(self, text=self.task.title, font=( "Arial", 24), bg="lightblue")  
         self.task_name.grid(column=0,row=0,columnspan=2)
 
@@ -32,10 +63,15 @@ class TaskCard(tk.Frame):
         self.complete = tk.Button(self, width=10, text="Complete", font=("Arial", 12), bg="green", command=self.on_complete_click)
         self.complete.grid(column=0, row=3, columnspan=2)
         
-        self.edit = tk.Button(self, width=5, text="Edit", font=("Arial", 12), bg="azure4", fg="black", command=self.on_edit_click)
+        self.edit_button = AddTaskButton(self, "edit task", new_card=EditCard(self.task, self), col=0, row=4, width=5)
         self.delete = tk.Button(self, width=5, text="Delete", font=("Arial", 12), bg="azure4", command=self.on_delete_click)
-        self.edit.grid(column=0, row=4)
+        self.edit_button.grid(column=0, row=4)
         self.delete.grid(column=1, row=4)
+
+    def refresh(self):
+        """Updates the UI to reflect the task's new data."""
+        self.task_name.config(text=self.task.title)
+        self.due_date.config(text=self.task.due_date)
 
     def on_complete_click(self):
         if self.task.completed:
@@ -46,48 +82,39 @@ class TaskCard(tk.Frame):
         completed_category.add_card(self)
         print("Task Completed")
 
+    # def save_changes(self):
+        
+    #     self.task_name.config(text=self.title)
+    #     self.due_date.config(text=new_due_date)
+
+
     def on_edit_click(self):
         """Opens a pop-up window to edit the task details."""
-        edit_window = tk.Toplevel(self.root)
-        edit_window.title("Edit Task")
-        edit_window.geometry("300x200")
-        edit_window.configure(bg="white")
+        edit_button = AddTaskButton(root, "edit task")
+        edit_button.grid(pady=10)
+        # edit_window = tk.Toplevel(self.root)
+        # edit_window.title("Edit Task")
+        # edit_window.geometry("300x200")
+        # edit_window.configure(bg="white")
 
-        tk.Label(edit_window, text="Edit Task Name:", bg="white").pack(pady=5)
-        name_entry = tk.Entry(edit_window)
-        name_entry.insert(0, self.task.title)
-        name_entry.pack(pady=5)
+        # tk.Label(edit_window, text="Edit Task Name:", bg="white").pack(pady=5)
+        # name_entry = tk.Entry(edit_window)
+        # name_entry.insert(0, self.task.title)
+        # name_entry.pack(pady=5)
 
-        tk.Label(edit_window, text="Edit Due Date:", bg="white").pack(pady=5)
-        date_entry = tk.Entry(edit_window)
-        date_entry.insert(0, self.task.due_date)
-        date_entry.pack(pady=5)
+        # tk.Label(edit_window, text="Edit Due Date:", bg="white").pack(pady=5)
+        # date_entry = tk.Entry(edit_window)
+        # date_entry.insert(0, self.task.due_date)
+        # date_entry.pack(pady=5)
 
-        def save_changes():
-            new_title = name_entry.get()
-            new_due_date = date_entry.get()
-            if new_title and new_due_date:
-                # Update task in the backend
-                task_manager.edit_task(self.task.id, "title", new_title)
-                task_manager.edit_task(self.task.id, "due_date", new_due_date)
+        # 
+        # save_button = tk.Button(edit_, text="Save", bg="green", fg="white", command=save_changes)
+        # save_button.pack(pady=10)
 
-                # Refresh task in the frontend
-                self.update_idletasks()
+        # cancel_button = tk.Button(edit_window, text="Cancel", bg="red", fg="white", command=edit_window.destroy)
+        # cancel_button.pack(pady=5)
 
-                # Update UI labels
-                self.task_name.config(text=new_title)
-                self.due_date.config(text=new_due_date)
-
-                edit_window.destroy()
-                print("Task updated!")
-
-        save_button = tk.Button(edit_window, text="Save", bg="green", fg="white", command=save_changes)
-        save_button.pack(pady=10)
-
-        cancel_button = tk.Button(edit_window, text="Cancel", bg="red", fg="white", command=edit_window.destroy)
-        cancel_button.pack(pady=5)
-
-        print("Editing task...")
+        # print("Editing task...")
 
     def on_delete_click(self):
         task_manager.delete_task(self.task.id)
@@ -106,7 +133,7 @@ class CategoryContainer(tk.Frame):
     CARD_DISPLAY_SIZE = 3
     
     def __init__(self, root, category_name: str):
-        super().__init__(root)  # Initialize the parent Frame
+        super().__init__(root)  
         self.root = root
         self.name = category_name
         self.cards = []
@@ -196,15 +223,17 @@ class CheckCategory(InputChecker):
             return True
 
 class AddTaskButton(tk.Frame):
-    def __init__(self, root):
+    def __init__(self, root, title:str, new_card:Editer, col=0, row=0, width=10) :
         super().__init__(root)
+        self.new_card = new_card
         self.root = root
-        complete = tk.Button(self, width=10, text="Add Task", font=("Arial", 12), bg="cornflowerblue", command= self.on_click)
-        complete.grid(column=0, row=0)
+        self.title = title
+        complete = tk.Button(self, width=width, text=title, font=("Arial", 12), bg="cornflowerblue", command= self.on_click)
+        complete.grid(column=col, row=row)
 
     def on_click(self):
         input_window = tk.Toplevel(self)
-        input_window.wm_title("Add New Task")
+        input_window.wm_title(self.title)
 
         title = tk.StringVar()
         description = tk.StringVar()
@@ -266,8 +295,10 @@ class AddTaskButton(tk.Frame):
             else:
                 category_entry.config(bg="white")
             if valid:
-                default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(), category.get())))
+                self.new_card.information(root, title.get(), description.get(), priority.get(), due_date.get(), category.get())
                 input_window.destroy()
+                self.update_idletasks()
+                
 
         submit_button = tk.Button(input_window, text = 'Submit', command=submit)
 
@@ -336,7 +367,7 @@ root = tk.Tk()
 root.title("Task Manager")
 
 # Add Task Button
-add_button = AddTaskButton(root)
+add_button = AddTaskButton(root, "Add New Task", new_card = NewCard())
 add_button.grid(row=0, column=0, padx=20)
 
 default_category = CategoryContainer(root, "Default")
