@@ -9,12 +9,10 @@ class TaskMaster:
         self.save_loc = 'saves/'
         self.save_dir = os.fsencode(self.save_loc)
 
-    def add_task(self, title: str, description: str, priority: int,
-                due_date: str, category: str, completed: bool = False):
-        """"
+    def add_task(self, new_task: Task):
+        """
             Add a new task with a unique ID.
         """
-        new_task = Task(title, description, priority, due_date, category, completed)
         self.tasks[new_task.id] = new_task
         print(f"Task added with ID: {new_task.id}")
 
@@ -50,12 +48,10 @@ class TaskMaster:
 
         #iterate through id and object pairs
         for id, object in self.tasks.items():
+            #dump task data to file
 
-            if isinstance(object, Task):
-
-                #dump task data to file
-                with open(self.save_loc + str(id) + "-" + object.title.replace(" ", "-") + ".json", 'w') as file:
-                    json.dump(object.to_dict(), file)
+            with open(self.save_loc + str(object.id) + "-" + object.title.replace(" ", "-") + ".json", 'w') as file:
+                json.dump(object.to_dict(), file)
 
     # Load Tasks from JSON
     def load(self):
@@ -85,7 +81,10 @@ class TaskMaster:
                 self.tasks[task.id] = task
 
         #Adjust counting ID for Task class
-        Task.set_class_id(max(self.tasks.keys()) + 1)
+        if len(self.tasks) > 0:
+            Task.set_class_id(max(self.tasks.keys()) + 1)
+        else:
+            Task.set_class_id(0)
 
     def printf(self):
         print(self.tasks)
@@ -94,18 +93,19 @@ class TaskMaster:
     def edit_task(self, task_id: int, target_var: str, revision: str):
         if task_id not in self.tasks:
             raise Exception(f"Task ID#'{task_id}' not found")
-        
+
         task = self.tasks[task_id]
 
         target_var = target_var.lower()
         if target_var not in vars(task).keys():
             raise Exception(f"Variable '{target_var}' not valid Task attribute")
-        
+
         setattr(task, target_var, revision)
         print(task)
 
     def get_task(self, task_id: int):
-        return self.tasks[task_id]
-    
+        if task_id is not None:
+            return self.tasks[task_id]
+
     def get_tasks(self):
         return self.tasks

@@ -5,6 +5,7 @@ import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.task_master import TaskMaster
+from src.task import Task
 
 def main():
     master = TaskMaster()
@@ -21,7 +22,7 @@ def main():
         if choice == '1':
             title = input("Enter task name: ")
             description = input("Enter task description: ")
-            master.add_task(title, description, 0, 0, "", False)
+            master.add_task(Task(title, description, 0, 0, "", False))
         elif choice == '2':
             try:
                 task_id = int(input("Enter task ID to delete: "))
