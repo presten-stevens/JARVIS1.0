@@ -32,7 +32,6 @@ class EditCard(Editer):
             task_manager.edit_task(self.task.id, "category", new_category)
             task_manager.edit_task(self.task.id, "description", new_description)
 
-            # Refresh UI after edit
             self.task_card.refresh()
 
 class NewCard(Editer):
@@ -82,40 +81,11 @@ class TaskCard(tk.Frame):
         completed_category.add_card(self)
         print("Task Completed")
 
-    # def save_changes(self):
-        
-    #     self.task_name.config(text=self.title)
-    #     self.due_date.config(text=new_due_date)
-
-
     def on_edit_click(self):
         """Opens a pop-up window to edit the task details."""
         edit_button = AddTaskButton(root, "edit task")
         edit_button.grid(pady=10)
-        # edit_window = tk.Toplevel(self.root)
-        # edit_window.title("Edit Task")
-        # edit_window.geometry("300x200")
-        # edit_window.configure(bg="white")
-
-        # tk.Label(edit_window, text="Edit Task Name:", bg="white").pack(pady=5)
-        # name_entry = tk.Entry(edit_window)
-        # name_entry.insert(0, self.task.title)
-        # name_entry.pack(pady=5)
-
-        # tk.Label(edit_window, text="Edit Due Date:", bg="white").pack(pady=5)
-        # date_entry = tk.Entry(edit_window)
-        # date_entry.insert(0, self.task.due_date)
-        # date_entry.pack(pady=5)
-
-        # 
-        # save_button = tk.Button(edit_, text="Save", bg="green", fg="white", command=save_changes)
-        # save_button.pack(pady=10)
-
-        # cancel_button = tk.Button(edit_window, text="Cancel", bg="red", fg="white", command=edit_window.destroy)
-        # cancel_button.pack(pady=5)
-
-        # print("Editing task...")
-
+        
     def on_delete_click(self):
         task_manager.delete_task(self.task.id)
         if self.task.completed:
