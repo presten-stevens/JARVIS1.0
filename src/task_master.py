@@ -3,10 +3,11 @@ import os
 from task import Task
 
 class TaskMaster:
-    def __init__(self, saveLoc = 'saves/'):
+    def __init__(self, saveLoc = 'saves/', sortmode = "PRIORITY"):
         self.tasks = {}  # Dictionary to store tasks
         self.save_loc = saveLoc
         self.save_dir = os.fsencode(self.save_loc)
+        self.SORTMODE = sortmode
 
     def add_task(self, new_task: Task):
         """
@@ -117,3 +118,7 @@ class TaskMaster:
 
     def get_tasks(self):
         return self.tasks
+
+    def sort_tasks(self) -> tuple:
+        sortdict = {"PRIORITY": lambda x: x.priority}
+        return sorted(self.tasks.values(), key=sortdict[self.SORTMODE])

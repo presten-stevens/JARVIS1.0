@@ -76,4 +76,3 @@ class Task:
     @classmethod
     def set_class_id(cls, other: int):
         cls.class_id = other
-    
