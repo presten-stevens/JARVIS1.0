@@ -180,7 +180,6 @@ class CategoryContainer(tk.Frame):
         self.configure(bg="grey", height=height, width=width, bd=3, relief=tk.RAISED) 
         self.grid_propagate(False)
 
-        # title
         task_name = tk.Label(self, text=self.name, font=("Arial", 16), bg="grey")
         task_name.grid(column=0, row=0, columnspan=1, pady=5)
 
@@ -328,6 +327,9 @@ default_category.grid(row=0, column=1, padx=30, pady=30)
 completed_category = CategoryContainer(root, "Completed")
 completed_category.grid(row=0, column=2, padx=30, pady=30)
 
+filtered_category = CategoryContainer(root, "Filtered")
+filtered_category.grid(row=0, column=3, padx=30, pady=30)
+
 task_manager.load()
 for task in task_manager.get_tasks().values():
     if task.completed:
@@ -336,6 +338,13 @@ for task in task_manager.get_tasks().values():
         default_category.add_card(TaskCard(root, task))
 
 root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))
+
+
+print(task_manager.get_tags())
+filter_var = tk.StringVar(root)
+filter_var.set("None")
+filter_menu = tk.OptionMenu(root, filter_var, *task_manager.get_tags())
+filter_menu.grid(row=1, column=3, padx=30, pady=30)
 
 root.mainloop()
     

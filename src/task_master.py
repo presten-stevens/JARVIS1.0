@@ -136,3 +136,11 @@ class TaskMaster:
     def filter_tasks_by_tag(self, tag):
         """Return a list of tasks that contain the given tag."""
         return [task for task in self.tasks if tag in task.tags]
+    
+    def get_tags(self):
+        tags = ["None"]
+        for task in self.tasks.values():
+            for tag in task.tags:
+                if tag not in tags:
+                    tags.append(tag)
+        return tags
