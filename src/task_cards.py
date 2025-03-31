@@ -10,6 +10,7 @@ class TaskCard(tk.Frame):
     def __init__(self, root, task: Task):
         super().__init__(root)  # Initialize the parent Frame
         self.root = root
+        self.id = task.id
         self.task = task
         task_manager.add_task(task)
 
@@ -255,7 +256,7 @@ class LoadButton(tk.Frame):
     def load(self):
         task_manager.load()
         for task in task_manager.get_tasks().values():
-            print(id, task)
+            print(task.id, task)
             if task.completed:
                 completed_category.add_card(TaskCard(self.root, task))
             else:
@@ -302,7 +303,7 @@ completed_category.grid(row=0, column=2, padx=30, pady=30)
 
 task_manager.load()
 for task in task_manager.get_tasks().values():
-    print(id, task)
+    print(task.id, task)
     if task.completed:
         completed_category.add_card(TaskCard(root, task))
     else:

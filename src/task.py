@@ -9,7 +9,7 @@ class Task:
         self.due_date = due_date
         self.category = category
         self.completed = completed
-        self.tags = tags if tags is not None else []
+        self.tags = tags if tags else []
         if id == None:
             self.id = Task.class_id
         else:
