@@ -12,8 +12,10 @@ class TaskMaster:
         """
             Add a new task with a unique ID.
         """
+
         self.tasks[new_task.id] = new_task
         print(f"Task added with ID: {new_task.id}")
+
 
     def delete_task(self, task_id):
         """"
