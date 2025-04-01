@@ -46,7 +46,7 @@ class TaskCard(tk.Frame):
         self.task = task
         task_manager.add_task(task)
 
-        self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  # Set background and padding
+        self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  
         
         self.task_name = tk.Label(self, text=self.task.title, font=( "Arial", 24), bg="lightblue")  
         self.task_name.grid(column=0,row=0,columnspan=2)
@@ -68,7 +68,6 @@ class TaskCard(tk.Frame):
         self.delete.grid(column=1, row=4)
 
     def refresh(self):
-        """Updates the UI to reflect the task's new data."""
         self.task_name.config(text=self.task.title)
         self.due_date.config(text=self.task.due_date)
 
@@ -80,6 +79,7 @@ class TaskCard(tk.Frame):
         default_category.remove_card(self)
         completed_category.add_card(self)
         print("Task Completed")
+
 
     def on_edit_click(self):
         """Opens a pop-up window to edit the task details."""
