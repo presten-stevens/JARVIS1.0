@@ -181,7 +181,6 @@ class CategoryContainer(tk.Frame):
         self.configure(bg="grey", height=height, width=width, bd=3, relief=tk.RAISED) 
         self.grid_propagate(False)
 
-        # title
         task_name = tk.Label(self, text=self.name, font=("Arial", 16), bg="grey")
         task_name.grid(column=0, row=0, columnspan=1, pady=5)
 
@@ -304,16 +303,32 @@ class LoadButton(tk.Frame):
             print("Save!")
 
 def on_close(root):
-    # Create a confirmation window (popup)
     result = tk.messagebox.askyesno("Save Changes", "Do you want to save your changes?")
     
-    # If the user clicks "Yes", run the save function
     if result:
         task_manager.save()
-        root.quit()  # Close the main window
+        root.quit()
     else:
-        root.quit()  # Close the window without saving
+        root.quit() 
 
+def filter_tasks(val):
+    for card in filtered_category.cards:
+        if val not in card.task.tags:
+            filtered_category.remove_card(card)
+            if card.task.completed:
+                completed_category.add_card(card)
+            else:
+                default_category.add_card(card)
+
+    for card in completed_category.cards:
+        if val in card.task.tags:
+            completed_category.remove_card(card)
+            filtered_category.add_card(card)
+
+    for card in default_category.cards:
+        if val in card.task.tags:
+            default_category.remove_card(card)
+            filtered_category.add_card(card)
 
 # Create main application window
 root = tk.Tk()
@@ -329,6 +344,9 @@ default_category.grid(row=0, column=1, padx=30, pady=30)
 completed_category = CategoryContainer(root, "Completed")
 completed_category.grid(row=0, column=2, padx=30, pady=30)
 
+filtered_category = CategoryContainer(root, "Filtered")
+filtered_category.grid(row=0, column=3, padx=30, pady=30)
+
 task_manager.load()
 for task in task_manager.sort_tasks():
     if task.completed:
@@ -338,4 +356,13 @@ for task in task_manager.sort_tasks():
 
 root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))
 
+
+print(task_manager.get_tags())
+filter_var = tk.StringVar(root)
+filter_var.set("None")
+filter_menu = tk.OptionMenu(root, filter_var, *task_manager.get_tags())
+filter_menu.grid(row=1, column=3, padx=30, pady=30)
+
+print_button = tk.Button(root, text="Filter Tasks", command=lambda: filter_tasks(filter_var.get()))
+print_button.grid(row=2, column=3, padx=30, pady=30)
 root.mainloop()

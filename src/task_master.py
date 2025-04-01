@@ -129,7 +129,24 @@ class TaskMaster:
 
     def get_tasks(self):
         return self.tasks
+    
+    # Filter Tasks
+    def filter_tasks_by_priority(self, priority):
+        """Return a list of tasks with the given priority."""
+        return [task for task in self.tasks if task.priority == priority]
+    def filter_tasks_by_tag(self, tag):
+        """Return a list of tasks that contain the given tag."""
+        return [task for task in self.tasks if tag in task.tags]
+    
+    def get_tags(self):
+        tags = ["None"]
+        for task in self.tasks.values():
+            for tag in task.tags:
+                if tag not in tags:
+                    tags.append(tag)
+        return tags
 
-    def sort_tasks(self) -> tuple:
+    def sort_tasks(self):
         sortdict = {"PRIORITY": lambda x: x.priority}
-        return sorted(self.tasks.values(), key=sortdict[self.SORTMODE])
+        return sorted(self.get_tasks().values(), key = sortdict[self.SORTMODE])
+
