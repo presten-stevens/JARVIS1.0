@@ -4,7 +4,7 @@ import os
 import datetime
 
 # Add the parent directory of the current script to sys.path
-#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from task_master import TaskMaster
 from task import Task  # Make sure this is Task (capital 'T')
