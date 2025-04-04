@@ -2,12 +2,9 @@ import tkinter as tk
 from tkinter import messagebox
 from task import Task
 from task_master import TaskMaster
-<<<<<<< HEAD
 import tkinter.simpledialog as simpledialog
-=======
 from abc import ABC, abstractmethod
 from datetime import datetime
->>>>>>> Presten
 
 task_manager = TaskMaster()
 
@@ -49,18 +46,13 @@ class TaskCard(tk.Frame):
         self.root = root
         self.id = task.id
         self.task = task
-        task_manager.add_task(task)
-
-<<<<<<< HEAD
-        self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  # Set background and padding
+        task_manager.add_task(task) 
+        
+        self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  
         self.initialize_elements()
 
     
     def initialize_elements(self):
-=======
-        self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  
-        
->>>>>>> Presten
         self.task_name = tk.Label(self, text=self.task.title, font=( "Arial", 24), bg="lightblue")  
         self.task_name.grid(column=0,row=0,columnspan=2)
 
@@ -81,9 +73,10 @@ class TaskCard(tk.Frame):
 
         self.complete = tk.Button(self, width=10, text="Complete", font=("Arial", 12), bg="green", command=self.on_complete_click)
         self.complete.grid(column=0, row=3, columnspan=2)
-<<<<<<< HEAD
+        
+        self.edit= AddTaskButton(self, "Edit", new_card=EditCard(self.task, self), col=0, row=4, width=5)
 
-        self.edit = tk.Button(self, width=5, text="Edit", font=("Arial", 12), bg="azure4", fg="black", command=self.on_edit_click)
+        # self.edit = tk.Button(self, width=5, text="Edit", font=("Arial", 12), bg="azure4", fg="black", command=self.on_edit_click)
         self.edit.grid(column=0, row=4, pady=5)
 
         self.delete = tk.Button(self, width=5, text="Delete", font=("Arial", 12), bg="azure4", command=self.on_delete_click)
@@ -113,17 +106,10 @@ class TaskCard(tk.Frame):
     def update_task(self):
         self.task = task_manager.get_task(self.id)
 
-=======
-        
-        self.edit_button = AddTaskButton(self, "edit task", new_card=EditCard(self.task, self), col=0, row=4, width=5)
-        self.delete = tk.Button(self, width=5, text="Delete", font=("Arial", 12), bg="azure4", command=self.on_delete_click)
-        self.edit_button.grid(column=0, row=4)
-        self.delete.grid(column=1, row=4)
 
     def refresh(self):
         self.task_name.config(text=self.task.title)
         self.due_date.config(text=self.task.due_date)
->>>>>>> Presten
 
     def on_complete_click(self):
         self.on_show_less_click()
@@ -138,7 +124,9 @@ class TaskCard(tk.Frame):
 
     def on_edit_click(self):
         """Opens a pop-up window to edit the task details."""
-<<<<<<< HEAD
+        edit_button = AddTaskButton(root, "edit task",new_card=EditCard(self.task, self) )
+        edit_button.grid(pady=10)
+        
         edit_window = tk.Toplevel(self.root)
         edit_window.title("Edit Task")
         edit_window.geometry("300x250")
@@ -183,11 +171,6 @@ class TaskCard(tk.Frame):
 
         print("Editing task...")
 
-=======
-        edit_button = AddTaskButton(root, "edit task")
-        edit_button.grid(pady=10)
-        
->>>>>>> Presten
     def on_delete_click(self):
         task_manager.delete_task(self.task.id)
         if self.task.completed:
@@ -197,7 +180,7 @@ class TaskCard(tk.Frame):
 
         self.task = None
         print("Task Deleted")
-<<<<<<< HEAD
+
     
     def on_add_tag_click(self):
         tag_window = tk.Toplevel(self.root)
@@ -225,9 +208,6 @@ class TaskCard(tk.Frame):
             self.attached_tags_label.config(text="Tags: " + ", ".join(self.task.tags))
         else:
             self.attached_tags_label.config(text="Tags: None")
-=======
-
->>>>>>> Presten
 
 class CategoryContainer(tk.Frame):
     INTERIOR_PADDING = (20, 20)
@@ -357,12 +337,6 @@ class AddTaskButton(tk.Frame):
         tags_label = tk.Label(input_window, text='Tags')
         tags_entry = tk.Entry(input_window, textvariable=tags)
 
-<<<<<<< HEAD
-        def submit(event=None):
-            default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(),
-                                                           tags=[tag.strip() for tag in tags.get().split(',')])))
-            input_window.destroy()
-=======
         def submit():
             title_checker = CheckTitle()
             description_checker = CheckDescription()
@@ -395,18 +369,16 @@ class AddTaskButton(tk.Frame):
                 valid = False
             else:
                 due_date_entry.config(bg="white")
-
-            if not category_checker.checkObject(category.get()):
-                category_entry.config(bg="red")
-                valid = False
-            else:
-                category_entry.config(bg="white")
             if valid:
-                self.new_card.information(root, title.get(), description.get(), priority.get(), due_date.get(), category.get())
+                default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(),
+                                                           tags=[tag.strip() for tag in tags.get().split(',')])))
                 input_window.destroy()
                 self.update_idletasks()
                 
->>>>>>> Presten
+        # def submit(event=None):
+        #     default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(),
+        #                                                    tags=[tag.strip() for tag in tags.get().split(',')])))
+        #     input_window.destroy()
 
         submit_button = tk.Button(input_window, text = 'Submit', command=submit)
 
@@ -427,10 +399,8 @@ class AddTaskButton(tk.Frame):
 
         submit_button.grid(row=5, column=0, columnspan=2)
 
-<<<<<<< HEAD
+
         input_window.bind("<Return>", submit)
-=======
->>>>>>> Presten
 
         
 class LoadButton(tk.Frame):
