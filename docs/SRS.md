@@ -50,3 +50,19 @@ User Stories:
 
 ### Proof of ZenHub
 ![ZenHub](../.zenhub_status/zenhubScreenshotMilestone3.png)
+
+## Milestone 4 Update
+Functional Requirment:
+- Users can add tags to tasks to help organize them
+- Users can organize the tasks by the tags
+
+Nonfunctional Requirment:
+- Dates must be stored in a specific format to allow for future integration
+
+User Stories:
+- As a user I can add tags to my tasks
+- As a user I can sort my tasks by the different tags
+- As a user I can see all the information (Description, Due date, etc,.) of my task 
+
+### Sequence Diagram 
+![SequenceV3](images/sequenceV3.png)

@@ -3,18 +3,52 @@ from tkinter import messagebox
 from task import Task
 from task_master import TaskMaster
 import tkinter.simpledialog as simpledialog
+from abc import ABC, abstractmethod
+from datetime import datetime
 
 task_manager = TaskMaster()
 
+class Editer(ABC):
+    """Helps edit cards or add new cards"""
+    @abstractmethod
+    def information(self):
+        pass
+
+class EditCard(Editer):
+    def __init__(self, task, task_card):
+        self.task = task
+        self.task_card = task_card
+
+    def information(self, root, name_entry, description_entry, priority_entry, date_entry, category_entry):
+        new_title = name_entry
+        new_due_date = date_entry
+        new_priority = priority_entry
+        new_category = category_entry
+        new_description = description_entry
+
+        if new_title and new_due_date:
+            task_manager.edit_task(self.task.id, "title", new_title)
+            task_manager.edit_task(self.task.id, "due_date", new_due_date)
+            task_manager.edit_task(self.task.id, "priority", new_priority)
+            task_manager.edit_task(self.task.id, "category", new_category)
+            task_manager.edit_task(self.task.id, "description", new_description)
+
+            self.task_card.refresh()
+
+class NewCard(Editer):
+    def information(self, root, title, description, priority, due_date, category):
+        default_category.add_card(TaskCard(root, Task(title, description, priority, due_date, category))) 
+
+
 class TaskCard(tk.Frame):
     def __init__(self, root, task: Task):
-        super().__init__(root)  # Initialize the parent Frame
+        super().__init__(root)  
         self.root = root
         self.id = task.id
         self.task = task
-        task_manager.add_task(task)
-
-        self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  # Set background and padding
+        task_manager.add_task(task) 
+        
+        self.configure(bg="lightblue",height=150, width=240, padx=10, pady=10,bd=3, relief=tk.RAISED)  
         self.initialize_elements()
 
     
@@ -39,8 +73,10 @@ class TaskCard(tk.Frame):
 
         self.complete = tk.Button(self, width=10, text="Complete", font=("Arial", 12), bg="green", command=self.on_complete_click)
         self.complete.grid(column=0, row=3, columnspan=2)
+        
+        self.edit= AddTaskButton(self, "Edit", new_card=EditCard(self.task, self), col=0, row=4, width=5)
 
-        self.edit = tk.Button(self, width=5, text="Edit", font=("Arial", 12), bg="azure4", fg="black", command=self.on_edit_click)
+        # self.edit = tk.Button(self, width=5, text="Edit", font=("Arial", 12), bg="azure4", fg="black", command=self.on_edit_click)
         self.edit.grid(column=0, row=4, pady=5)
 
         self.delete = tk.Button(self, width=5, text="Delete", font=("Arial", 12), bg="azure4", command=self.on_delete_click)
@@ -71,6 +107,10 @@ class TaskCard(tk.Frame):
         self.task = task_manager.get_task(self.id)
 
 
+    def refresh(self):
+        self.task_name.config(text=self.task.title)
+        self.due_date.config(text=self.task.due_date)
+
     def on_complete_click(self):
         self.on_show_less_click()
         if self.task.completed:
@@ -81,8 +121,12 @@ class TaskCard(tk.Frame):
         completed_category.add_card(self)
                     
 
+
     def on_edit_click(self):
         """Opens a pop-up window to edit the task details."""
+        edit_button = AddTaskButton(root, "edit task",new_card=EditCard(self.task, self) )
+        edit_button.grid(pady=10)
+        
         edit_window = tk.Toplevel(self.root)
         edit_window.title("Edit Task")
         edit_window.geometry("300x250")
@@ -136,6 +180,7 @@ class TaskCard(tk.Frame):
 
         self.task = None
         print("Task Deleted")
+
     
     def on_add_tag_click(self):
         tag_window = tk.Toplevel(self.root)
@@ -170,7 +215,7 @@ class CategoryContainer(tk.Frame):
     CARD_DISPLAY_SIZE = 3
     
     def __init__(self, root, category_name: str):
-        super().__init__(root)  # Initialize the parent Frame
+        super().__init__(root)  
         self.root = root
         self.name = category_name
         self.cards = []
@@ -216,16 +261,60 @@ class CategoryContainer(tk.Frame):
         self.update_idletasks()
 
 
+class InputChecker(ABC):
+    @abstractmethod
+    def checkObject(self):
+        pass
+
+class CheckTitle(InputChecker):
+    def checkObject(self, title):
+        if title == "":
+            return False 
+        else:
+            return True 
+        
+class CheckDescription(InputChecker):
+    def checkObject(self, description):
+        if description == "":
+            return False
+        else:
+            return True 
+
+class CheckPriority(InputChecker):
+    def checkObject(self, priority):
+        if( not priority.isdigit() or not int(priority) > 0):
+            return False
+        else:
+            return True 
+        
+class CheckDate(InputChecker):
+    def checkObject(self, date):
+        format = "%d-%m-%Y"
+        try: 
+            result = bool(datetime.strptime(date, format))
+        except ValueError:
+            result = False
+        return result
+
+class CheckCategory(InputChecker):
+    def checkObject(self, Category):
+        if(Category == ""):
+            return False
+        else:
+            return True
+
 class AddTaskButton(tk.Frame):
-    def __init__(self, root):
+    def __init__(self, root, title:str, new_card:Editer, col=0, row=0, width=10) :
         super().__init__(root)
+        self.new_card = new_card
         self.root = root
-        complete = tk.Button(self, width=10, text="Add Task", font=("Arial", 12), bg="cornflowerblue", command= self.on_click)
-        complete.grid(column=0, row=0)
+        self.title = title
+        complete = tk.Button(self, width=width, text=title, font=("Arial", 12), bg="cornflowerblue", command= self.on_click)
+        complete.grid(column=col, row=row)
 
     def on_click(self):
         input_window = tk.Toplevel(self)
-        input_window.wm_title("Add New Task")
+        input_window.wm_title(self.title)
 
         title = tk.StringVar()
         description = tk.StringVar()
@@ -248,10 +337,48 @@ class AddTaskButton(tk.Frame):
         tags_label = tk.Label(input_window, text='Tags')
         tags_entry = tk.Entry(input_window, textvariable=tags)
 
-        def submit(event=None):
-            default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(),
+        def submit():
+            title_checker = CheckTitle()
+            description_checker = CheckDescription()
+            priority_checker = CheckPriority()
+            date_checker = CheckDate()
+            category_checker = CheckCategory()
+
+            valid = True
+
+            if not title_checker.checkObject(title.get()):
+                title_entry.config(bg="red")
+                valid = False
+            else:
+                title_entry.config(bg="white")
+
+            if not description_checker.checkObject(description.get()):
+                description_entry.config(bg="red")
+                valid = False
+            else:
+                description_entry.config(bg="white")
+
+            if not priority_checker.checkObject(priority.get()):
+                priority_entry.config(bg="red")
+                valid = False
+            else:
+                priority_entry.config(bg="white")
+
+            if not date_checker.checkObject(due_date.get()):
+                due_date_entry.config(bg="red")
+                valid = False
+            else:
+                due_date_entry.config(bg="white")
+            if valid:
+                default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(),
                                                            tags=[tag.strip() for tag in tags.get().split(',')])))
-            input_window.destroy()
+                input_window.destroy()
+                self.update_idletasks()
+                
+        # def submit(event=None):
+        #     default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(),
+        #                                                    tags=[tag.strip() for tag in tags.get().split(',')])))
+        #     input_window.destroy()
 
         submit_button = tk.Button(input_window, text = 'Submit', command=submit)
 
@@ -271,6 +398,7 @@ class AddTaskButton(tk.Frame):
         tags_entry.grid(row=4, column=1)
 
         submit_button.grid(row=5, column=0, columnspan=2)
+
 
         input_window.bind("<Return>", submit)
 
@@ -335,7 +463,7 @@ root = tk.Tk()
 root.title("Task Manager")
 
 # Add Task Button
-add_button = AddTaskButton(root)
+add_button = AddTaskButton(root, "Add New Task", new_card = NewCard())
 add_button.grid(row=0, column=0, padx=20)
 
 default_category = CategoryContainer(root, "Default")
