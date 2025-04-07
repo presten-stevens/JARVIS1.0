@@ -96,24 +96,16 @@ class TaskMaster:
                 data = json.load(file)
 
                 #create task from data dictionary
-                task = Task(
-                    title=data["title"],
-                    description=data["description"],
-                    priority=data["priority"],
-                    due_date=data["due_date"],
-                    category=data["category"],
-                    completed=data["completed"],
-                    tags=data["tags"]
-                )
+                task = Task.from_dict(data)
 
                 #assign id/task key/value pair
                 self.tasks[task.id] = task
 
-        # Adjust counting ID for Task class
-        if self.tasks:
-            Task.class_id = max(self.tasks.keys()) + 1
+        #Adjust counting ID for Task class
+        if len(self.tasks) > 0:
+            Task.set_class_id(max(self.tasks.keys()) + 1)
         else:
-            Task.class_id = 0
+            Task.set_class_id(0)
 
     def printf(self):
         print(self.tasks)
