@@ -19,25 +19,25 @@ class EditCard(Editer):
         self.task = task
         self.task_card = task_card
 
-    def information(self, root, name_entry, description_entry, priority_entry, date_entry, category_entry):
+    def information(self, root, name_entry, description_entry, priority_entry, date_entry, tags):
         new_title = name_entry
         new_due_date = date_entry
         new_priority = priority_entry
-        new_category = category_entry
+        # new_category = category_entry
         new_description = description_entry
 
         if new_title and new_due_date:
             task_manager.edit_task(self.task.id, "title", new_title)
             task_manager.edit_task(self.task.id, "due_date", new_due_date)
             task_manager.edit_task(self.task.id, "priority", new_priority)
-            task_manager.edit_task(self.task.id, "category", new_category)
+            # task_manager.edit_task(self.task.id, "category", new_category)
             task_manager.edit_task(self.task.id, "description", new_description)
 
             self.task_card.refresh()
 
 class NewCard(Editer):
-    def information(self, root, title, description, priority, due_date, category):
-        default_category.add_card(TaskCard(root, Task(title, description, priority, due_date, category))) 
+    def information(self, root, title, description, priority, due_date, tags):
+        default_category.add_card(TaskCard(root, Task(title, description, priority, due_date, tags=tags))) 
 
 
 class TaskCard(tk.Frame):
@@ -370,8 +370,7 @@ class AddTaskButton(tk.Frame):
             else:
                 due_date_entry.config(bg="white")
             if valid:
-                default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(),
-                                                           tags=[tag.strip() for tag in tags.get().split(',')])))
+                self.new_card.information(root, title.get(), description.get(), priority.get(), due_date.get(), tags=[tag.strip() for tag in tags.get().split(',')])
                 input_window.destroy()
                 self.update_idletasks()
                 
