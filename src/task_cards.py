@@ -23,6 +23,7 @@ class EditCard(Editer):
         new_title = name_entry
         new_due_date = date_entry
         new_priority = priority_entry
+        
         # new_category = category_entry
         new_description = description_entry
 
