@@ -19,7 +19,7 @@ class EditCard(Editer):
         self.task = task
         self.task_card = task_card
 
-    def information(self, root, name_entry, description_entry, priority_entry, date_entry):
+    def information(self, root, name_entry, description_entry, priority_entry, date_entry, tags):
         new_title = name_entry
         new_due_date = date_entry
         new_priority = priority_entry
@@ -36,8 +36,8 @@ class EditCard(Editer):
             self.task_card.refresh()
 
 class NewCard(Editer):
-    def information(self, root, title, description, priority, due_date):
-        default_category.add_card(TaskCard(root, Task(title, description, priority, due_date))) 
+    def information(self, root, title, description, priority, due_date, tags):
+        default_category.add_card(TaskCard(root, Task(title, description, priority, due_date, tags=tags))) 
 
 
 class TaskCard(tk.Frame):
@@ -370,7 +370,7 @@ class AddTaskButton(tk.Frame):
             else:
                 due_date_entry.config(bg="white")
             if valid:
-                self.new_card.information(root, title.get(), description.get(), priority.get(), due_date.get())
+                self.new_card.information(root, title.get(), description.get(), priority.get(), due_date.get(), tags=[tag.strip() for tag in tags.get().split(',')])
                 input_window.destroy()
                 self.update_idletasks()
                 
