@@ -3,6 +3,7 @@ from tkinter import messagebox
 from task import Task
 from task_master import TaskMaster
 import tkinter.simpledialog as simpledialog
+from tkcalendar import Calendar
 
 task_manager = TaskMaster()
 
@@ -93,10 +94,23 @@ class TaskCard(tk.Frame):
         name_entry.insert(0, self.task.title)
         name_entry.pack(pady=5)
 
-        tk.Label(edit_window, text="Edit Due Date:").pack(pady=5)
-        date_entry = tk.Entry(edit_window)
-        date_entry.insert(0, self.task.due_date)
-        date_entry.pack(pady=5)
+        # Create a new Toplevel window for the date picker
+        picker_window = tk.Toplevel()
+        picker_window.title('Select the Due Date')
+        
+        # Create a Calendar widget inside the Toplevel window
+        cal = Calendar(picker_window, selectmode='day', date_pattern='yyyy-mm-dd')
+        cal.pack(pady=20, padx=20)
+        
+        # Function to retrieve the selected date
+        def get_date():
+            selected_date = cal.get_date()
+            print('Selected Date:', selected_date)  # You can update a label or process the date as needed
+            picker_window.destroy()
+        
+        # Button to confirm the selection
+        select_button = tk.Button(picker_window, text='Select Date', command=get_date)
+        select_button.pack(pady=10)
 
         def save_changes(event=None):
             new_title = name_entry.get()
