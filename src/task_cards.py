@@ -261,27 +261,22 @@ class CategoryContainer(tk.Frame):
                 card.grid_forget()
         self.update_idletasks()
 
-class MenuContainer(CategoryContainer):
+class MenuContainer(tk.Frame):
     INTERIOR_PADDING = (20, 20)
+    CARD_SIZE = (200, 150)
 
     def __init__(self, root, title: str):
-        super().__init__(root, title)  
+        super().__init__(root)  
         self.root = root
-        self.name = title
-        self.menuitems = []
 
         width = (3 * self.CARD_SIZE[0]) + (12 * self.INTERIOR_PADDING[1])
-        height = ((self.CARD_SIZE[1] + self.INTERIOR_PADDING[1] + 40)) 
+        height = self.CARD_SIZE[1]
 
         self.configure(bg="grey", height=height, width=width, bd=3, relief=tk.RAISED) 
         self.grid_propagate(False)
-
+        
         self.grid_rowconfigure(1, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1, uniform="group1")  # Allow first column to take equal width
-        self.grid_columnconfigure(1, weight=1, uniform="group1")  # Allow second column to take equal width
-        self.grid_columnconfigure(2, weight=1, uniform="group1")  # Allow third column to take equal width
-        self.grid_columnconfigure(3, weight=1, uniform="group1")  # Allow fourth column to take equal width
+        self.grid_columnconfigure(0, weight=1)  
 
 
 
@@ -510,12 +505,12 @@ root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))
 
 print(task_manager.get_tags())
 add_button = AddTaskButton(menu, "Add New Task", new_card = NewCard())
-add_button.grid(row=1, column=0, padx=30, pady=30)
+add_button.grid(row=1, column=0)
 filter_var = tk.StringVar(root)
 filter_var.set("None")
 filter_menu = tk.OptionMenu(menu, filter_var, *task_manager.get_tags())
-filter_menu.grid(row=1, column=2, padx=30, pady=30)
+filter_menu.grid(row=1, column=1)
 
 print_button = tk.Button(menu, text="Filter Tasks", command=lambda: filter_tasks(filter_var.get()))
-print_button.grid(row=1, column=3, padx=30, pady=30)
+print_button.grid(row=1, column=2, padx=30)
 root.mainloop()
