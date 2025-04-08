@@ -261,6 +261,29 @@ class CategoryContainer(tk.Frame):
                 card.grid_forget()
         self.update_idletasks()
 
+class MenuContainer(CategoryContainer):
+    INTERIOR_PADDING = (20, 20)
+
+    def __init__(self, root, title: str):
+        super().__init__(root, title)  
+        self.root = root
+        self.name = title
+        self.menuitems = []
+
+        width = (3 * self.CARD_SIZE[0]) + (12 * self.INTERIOR_PADDING[1])
+        height = ((self.CARD_SIZE[1] + self.INTERIOR_PADDING[1] + 40)) 
+
+        self.configure(bg="grey", height=height, width=width, bd=3, relief=tk.RAISED) 
+        self.grid_propagate(False)
+
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1, uniform="group1")  # Allow first column to take equal width
+        self.grid_columnconfigure(1, weight=1, uniform="group1")  # Allow second column to take equal width
+        self.grid_columnconfigure(2, weight=1, uniform="group1")  # Allow third column to take equal width
+        self.grid_columnconfigure(3, weight=1, uniform="group1")  # Allow fourth column to take equal width
+
+
 
 class InputChecker(ABC):
     @abstractmethod
@@ -462,18 +485,18 @@ def filter_tasks(val):
 root = tk.Tk()
 root.title("Task Manager")
 
-# Add Task Button
-add_button = AddTaskButton(root, "Add New Task", new_card = NewCard())
-add_button.grid(row=0, column=0, padx=20)
+# create menu
+menu = MenuContainer(root, "Menu")
+menu.grid(row=0, column = 0, columnspan=4, padx=30, pady=30)
 
 default_category = CategoryContainer(root, "Default")
-default_category.grid(row=0, column=1, padx=30, pady=30)
+default_category.grid(row=1, column=1, padx=30, pady=30)
 
 completed_category = CategoryContainer(root, "Completed")
-completed_category.grid(row=0, column=2, padx=30, pady=30)
+completed_category.grid(row=1, column=2, padx=30, pady=30)
 
 filtered_category = CategoryContainer(root, "Filtered")
-filtered_category.grid(row=0, column=3, padx=30, pady=30)
+filtered_category.grid(row=1, column=3, padx=30, pady=30)
 
 task_manager.load()
 for task in task_manager.sort_tasks():
@@ -486,11 +509,13 @@ root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))
 
 
 print(task_manager.get_tags())
+add_button = AddTaskButton(menu, "Add New Task", new_card = NewCard())
+add_button.grid(row=1, column=0, padx=30, pady=30)
 filter_var = tk.StringVar(root)
 filter_var.set("None")
-filter_menu = tk.OptionMenu(root, filter_var, *task_manager.get_tags())
-filter_menu.grid(row=1, column=3, padx=30, pady=30)
+filter_menu = tk.OptionMenu(menu, filter_var, *task_manager.get_tags())
+filter_menu.grid(row=1, column=2, padx=30, pady=30)
 
-print_button = tk.Button(root, text="Filter Tasks", command=lambda: filter_tasks(filter_var.get()))
-print_button.grid(row=2, column=3, padx=30, pady=30)
+print_button = tk.Button(menu, text="Filter Tasks", command=lambda: filter_tasks(filter_var.get()))
+print_button.grid(row=1, column=3, padx=30, pady=30)
 root.mainloop()
