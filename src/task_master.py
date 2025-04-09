@@ -4,11 +4,10 @@ from task import Task
 
 class TaskMaster:
     def __init__(self, saveLoc = 'saves/', sortmode = "PRIORITY"):
-        self.tasks = {}  # Dictionary to store tasks
+        self.tasks = {}  
         self.save_loc = saveLoc
         self.save_dir = os.fsencode(self.save_loc)
         self.SORTMODE = sortmode
-        self.custom_tags = []  # List to store custom tags
 
     def add_task(self, new_task: Task):
         """
@@ -21,11 +20,11 @@ class TaskMaster:
         """"
             Delete a task by its ID. And delete it from the save folder
         """
-        if task_id in self.tasks:
-            del self.tasks[task_id]
-            print(f"Task with ID {task_id} deleted.")
-        else:
-            print(f"Task with ID {task_id} not found.")
+        task = self.get_task(task_id)
+        if not task: 
+            return
+        del self.tasks[task_id]
+        print(f"Task with ID {task_id} deleted.")
 
 
     def view_tasks(self):
@@ -45,15 +44,17 @@ class TaskMaster:
             print("-" * 20)
 
     def update_task_with_tag(self, task_id: int, tag: str):
-        if task_id in self.tasks:
-            task = self.tasks[task_id]
-            if tag not in task.tags:
-                task.add_tag(tag)
-                print(f"Task '{task.title}' updated with tag: {tag}")
-            else:
-                print(f"Task '{task.title}' already has tag: {tag}")
+        """
+            Updates a given task (by ID) to have an additional tag
+        """
+        task = self.get_task(task_id)
+        print(task.tags)
+        if tag not in task.tags:
+            task.add_tag(tag)
+            print(f"Task '{task.title}' updated with tag: {tag}")
         else:
-            print(f"Task with ID {task_id} not found.")
+            print(f"Task '{task.title}' already has tag: {tag}")
+        
 
     # Save Tasks as JSON
     def save(self):
@@ -112,6 +113,9 @@ class TaskMaster:
 
     # Edit Tasks
     def edit_task(self, task_id: int, target_var: str, revision: str):
+        """
+            Edits a task given its id, the variable you want to change, and the desired value
+        """
         if task_id not in self.tasks:
             raise Exception(f"Task ID#'{task_id}' not found")
 
@@ -124,21 +128,34 @@ class TaskMaster:
         setattr(task, target_var, revision)
 
     def get_task(self, task_id: int):
-        if task_id is not None:
+        """
+            Returns task from ID
+        """
+        if task_id in self.tasks.keys():
             return self.tasks[task_id]
+        else:
+            print(f"Task with ID {task_id} not found.")
 
     def get_tasks(self):
         return self.tasks
     
     # Filter Tasks
     def filter_tasks_by_priority(self, priority):
-        """Return a list of tasks with the given priority."""
+        """
+            Returns a list of tasks with the given priority.
+        """
         return [task for task in self.tasks if task.priority == priority]
+    
     def filter_tasks_by_tag(self, tag):
-        """Return a list of tasks that contain the given tag."""
+        """
+            Return a list of tasks that contain the given tag.
+        """
         return [task for task in self.tasks if tag in task.tags]
     
     def get_tags(self):
+        """
+            Returns a list of all current tags for tasks 
+        """
         tags = ["None"]
         for task in self.tasks.values():
             for tag in task.tags:
@@ -147,6 +164,9 @@ class TaskMaster:
         return tags
 
     def sort_tasks(self):
+        """
+            Returns the tasks sorted by SORTMODE
+        """
         sortdict = {"PRIORITY": lambda x: x.priority}
         return sorted(self.get_tasks().values(), key = sortdict[self.SORTMODE])
 

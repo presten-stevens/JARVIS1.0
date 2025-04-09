@@ -195,8 +195,6 @@ class TaskCard(tk.Frame):
         def add_tag(event=None):
             title = title_entry.get().strip()
             if title:
-                self.task.add_tag(title)
-                # Update backend
                 task_manager.update_task_with_tag(self.task.id, title)
                 self.update_tags_label()
                 tag_window.destroy()
