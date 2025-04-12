@@ -5,6 +5,7 @@ from task_master import TaskMaster
 import tkinter.simpledialog as simpledialog
 from abc import ABC, abstractmethod
 from datetime import datetime
+import calendar_dropper
 
 task_manager = TaskMaster()
 
@@ -288,7 +289,7 @@ class CheckPriority(InputChecker):
         
 class CheckDate(InputChecker):
     def checkObject(self, date):
-        format = "%d-%m-%Y"
+        format = "%d/%m/%Y"
         try: 
             result = bool(datetime.strptime(date, format))
         except ValueError:
@@ -331,7 +332,8 @@ class AddTaskButton(tk.Frame):
         priority_entry = tk.Entry(input_window, textvariable=priority)
 
         due_date_label = tk.Label(input_window, text='Due Date')
-        due_date_entry = tk.Entry(input_window, textvariable=due_date)
+        due_date_entry = calendar_dropper.CalendarEntry(input_window)
+        due_date=due_date_entry.date
 
         tags_label = tk.Label(input_window, text='Tags')
         tags_entry = tk.Entry(input_window, textvariable=tags)
