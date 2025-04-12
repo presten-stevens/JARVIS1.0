@@ -1,0 +1,46 @@
+import tkinter as tk
+import calendar
+from datetime import datetime
+
+class Day(tk.Frame):
+    def __init__(self, master, day_number):
+        super().__init__(master, borderwidth=1, relief="solid", width=100, height=100)
+        self.day_number = day_number
+        self.tasks = []
+
+        self.grid_propagate(False)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+        
+        self.day_label = tk.Label(self, text=str(day_number), font=("Arial", 9, "bold"))
+        self.day_label.place(relx=0, rely=0, anchor="nw", x=4, y=2)
+
+
+class CalendarView(tk.Frame):
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("Calendar")
+        self.create_outline()
+        self.root.mainloop()
+    
+    def create_outline(self):
+        now = datetime.today()
+        cal = calendar.monthcalendar(now.year, now.month)
+
+        header = tk.Label(self.root, text=now.strftime("%B %Y"), font=("Arial", 14, "bold"))
+        header.grid(row=0, column=0, columnspan=7, pady=(10, 5))
+
+        days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        for i, day in enumerate(days):
+            tk.Label(self.root, text=day, font=("Arial", 10, "bold")).grid(row=1, column=i, padx=2, pady=2)
+
+        for r, week in enumerate(cal, start=2):
+            for c, day in enumerate(week):
+                if day == 0:
+                    empty = tk.Frame(self.root, width=60, height=60)
+                    empty.grid(row=r, column=c, padx=1, pady=1)
+                    continue
+                day_frame = Day(self.root, day)
+                day_frame.grid(row=r, column=c, padx=1, pady=1)
+
+calendar_bro = CalendarView()
