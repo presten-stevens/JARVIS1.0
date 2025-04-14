@@ -19,7 +19,7 @@ class Day(tk.Frame):
 class CalendarView(tk.Toplevel):
     def __init__(self, master=None):
         super().__init__(master)
-        self.title("Calendar") 
+        self.title("Calendar")
         self.create_outline()
     
     def create_outline(self):
