@@ -1,6 +1,7 @@
 import tkinter as tk
 import calendar
 from datetime import datetime
+from task_master import TaskMaster
 
 class Day(tk.Frame):
     def __init__(self, master, day_number):
@@ -19,7 +20,11 @@ class Day(tk.Frame):
 class CalendarView(tk.Toplevel):
     def __init__(self, master=None):
         super().__init__(master)
+        task_master = TaskMaster()
+        task_master.load()
         self.title("Calendar")
+        self.tasks = task_master.get_tasks()
+        print(self.tasks)
         self.create_outline()
     
     def create_outline(self):
