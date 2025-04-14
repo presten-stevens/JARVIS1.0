@@ -3,6 +3,11 @@ import time
 import tkinter as tk
 
 
+##TODOS
+
+# Connect to tkinter
+# Turn off clock when there are no reminders
+
 class Reminder():
     def __init__(self, message: str, time: datetime):
         self.message = message
@@ -25,12 +30,9 @@ class ReminderManager():
 
     def run_clock(self):
         while (True): 
-            print(f"Checking time at {datetime.now()}")
-            print(len(self.reminders))
+            print(f"[{len(self.reminders)}] Checking at {datetime.now()}")
             for reminder in self.reminders:
-                print(reminder)
                 if ((reminder.time - datetime.now()) / timedelta(seconds=1)) < 0:
-                    print("BLEEB BLORP!!")
                     self.observer.send_notification(reminder)
                     self.reminders.remove(reminder) 
             time.sleep(10)
@@ -44,11 +46,11 @@ class Notifier():
     def send_notification(self, reminder):
         print(f"Sending Notification for: {reminder}")
 
-karl = ReminderManager()
-mynotifier = Notifier(karl)
+reminder_manager = ReminderManager()
+mynotifier = Notifier(reminder_manager)
 
-karl.add_reminder("Yippee!", datetime(year=2025, month=4, day=14, hour=16, minute=22))
-karl.add_reminder("Hooray!", datetime(year=2025, month=4, day=14, hour=16, minute=23))
-karl.add_reminder("Wahoo!", datetime(year=2025, month=4, day=14, hour=16, minute=24))
+reminder_manager.add_reminder("Yippee!", datetime(year=2025, month=4, day=14, hour=16, minute=23))
+reminder_manager.add_reminder("Hooray!", datetime(year=2025, month=4, day=14, hour=16, minute=24))
+reminder_manager.add_reminder("Wahoo!", datetime(year=2025, month=4, day=14, hour=16, minute=25))
 
-karl.run_clock()
+reminder_manager.run_clock()
