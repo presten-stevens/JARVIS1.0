@@ -11,7 +11,6 @@ import calendar_view
 task_manager = TaskMaster()
 
 class Editer(ABC):
-    """Helps edit cards or add new cards"""
     @abstractmethod
     def information(self):
         pass
