@@ -185,23 +185,45 @@ class TaskCard(tk.Frame):
 
     
     def on_add_tag_click(self):
+        # Create a new Toplevel window for tag selection/creation.
         tag_window = tk.Toplevel(self.root)
         tag_window.title("Add Tag")
-        tag_window.geometry("300x150")
+        tag_window.geometry("300x250")
         
-        tk.Label(tag_window, text="Tag Title:").pack(pady=5)
-        title_entry = tk.Entry(tag_window)
-        title_entry.pack(pady=5)
+        # Section for existing tags
+        tk.Label(tag_window, text="Select an existing tag:").pack(pady=5)
+        existing_tags = task_manager.get_tags()
+        tag_listbox = tk.Listbox(tag_window, height=6)
+        for tag in existing_tags:
+            tag_listbox.insert(tk.END, tag)
+        tag_listbox.pack(pady=5, fill='x')
         
-        def add_tag(event=None):
-            title = title_entry.get().strip()
-            if title:
-                task_manager.update_task_with_tag(self.task.id, title)
-                self.update_tags_label()
-                tag_window.destroy()
+        # Section for creating a new tag
+        tk.Label(tag_window, text="Or create a new tag:").pack(pady=5)
+        new_tag_entry = tk.Entry(tag_window)
+        new_tag_entry.pack(pady=5, fill='x')
         
-        tag_window.bind("<Return>", add_tag)
-        tk.Button(tag_window, text="Add Tag", command=add_tag).pack(pady=10)
+        # Confirmation button to add the tag
+        def confirm_tag():
+            new_tag = new_tag_entry.get().strip()
+            selected_indices = tag_listbox.curselection()
+            # If user entered a new tag, prefer that over any selection.
+            if new_tag:
+                chosen_tag = new_tag
+            elif selected_indices:
+                chosen_tag = tag_listbox.get(selected_indices[0])
+            else:
+                tk.messagebox.showerror("Error", "Please select a tag or enter a new one.")
+                return
+            
+            # Update the task with the new or selected tag using task_manager.
+            task_manager.update_task_with_tag(self.task.id, chosen_tag)
+            # Refresh the UI label to show updated tags.
+            self.update_tags_label()
+            tag_window.destroy()
+        
+        tk.Button(tag_window, text="Confirm", command=confirm_tag).pack(pady=10)
+
     
     def update_tags_label(self):
         if self.task.tags:
@@ -371,7 +393,7 @@ class AddTaskButton(tk.Frame):
             else:
                 due_date_entry.config(bg="white")
             if valid:
-                self.new_card.information(root, title.get(), description.get(), priority.get(), due_date.get(), tags=[tag.strip() for tag in tags.get().split(',')])
+                self.new_card.information(root, title.get(), description.get(), priority.get(), due_date.get(), tags=[tag.strip() for tag in tags.get().split(',') if tag.strip()])
                 input_window.destroy()
                 self.update_idletasks()
                 
