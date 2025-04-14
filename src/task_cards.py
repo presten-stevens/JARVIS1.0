@@ -6,6 +6,7 @@ import tkinter.simpledialog as simpledialog
 from abc import ABC, abstractmethod
 from datetime import datetime
 import calendar_dropper
+import calendar_view
 
 task_manager = TaskMaster()
 
@@ -464,7 +465,9 @@ root.title("Task Manager")
 
 # Add Task Button
 add_button = AddTaskButton(root, "Add New Task", new_card = NewCard())
-add_button.grid(row=0, column=0, padx=20)
+add_button.grid(row=1, column=1, padx=20)
+calendar = tk.Button(command=calendar_view.CalendarView, text="Calendar View")
+calendar.grid(row=1, column=2, padx=20)
 
 default_category = CategoryContainer(root, "Default")
 default_category.grid(row=0, column=1, padx=30, pady=30)

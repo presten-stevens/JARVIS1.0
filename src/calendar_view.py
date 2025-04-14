@@ -16,31 +16,28 @@ class Day(tk.Frame):
         self.day_label.place(relx=0, rely=0, anchor="nw", x=4, y=2)
 
 
-class CalendarView(tk.Frame):
-    def __init__(self):
-        self.root = tk.Tk()
-        self.root.title("Calendar")
+class CalendarView(tk.Toplevel):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.title("Calendar") 
         self.create_outline()
-        self.root.mainloop()
     
     def create_outline(self):
         now = datetime.today()
         cal = calendar.monthcalendar(now.year, now.month)
 
-        header = tk.Label(self.root, text=now.strftime("%B %Y"), font=("Arial", 14, "bold"))
+        header = tk.Label(self, text=now.strftime("%B %Y"), font=("Arial", 14, "bold"))
         header.grid(row=0, column=0, columnspan=7, pady=(10, 5))
 
         days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         for i, day in enumerate(days):
-            tk.Label(self.root, text=day, font=("Arial", 10, "bold")).grid(row=1, column=i, padx=2, pady=2)
+            tk.Label(self, text=day, font=("Arial", 10, "bold")).grid(row=1, column=i, padx=2, pady=2)
 
         for r, week in enumerate(cal, start=2):
             for c, day in enumerate(week):
                 if day == 0:
-                    empty = tk.Frame(self.root, width=60, height=60)
+                    empty = tk.Frame(self, width=60, height=60)
                     empty.grid(row=r, column=c, padx=1, pady=1)
                     continue
-                day_frame = Day(self.root, day)
+                day_frame = Day(self, day)
                 day_frame.grid(row=r, column=c, padx=1, pady=1)
-
-calendar_bro = CalendarView()
