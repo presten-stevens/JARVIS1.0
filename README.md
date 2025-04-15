@@ -9,3 +9,22 @@
 2. [SRS Document](docs/SRS.md)
 3. [Milestone 1 Reflection](docs/reflections/milestone2.md)
 4. [Latest Meeting Notes](docs/meeting-notes/milestone-3/meeting2.md)
+
+---
+
+## Features
+
+- Add, edit, and delete tasks
+- View tasks in a calendar format
+- Save/load tasks from local JSON files
+- Priority and tag-based filtering
+
+---
+
+## Setup Instructions
+
+### 1. Clone the repository:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/TaskMaster.git
+cd TaskMaster
