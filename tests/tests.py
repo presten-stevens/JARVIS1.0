@@ -4,7 +4,7 @@ import os
 import datetime
 
 # Add the parent directory of the current script to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
 from task_master import TaskMaster
 from task import Task  # Make sure this is Task (capital 'T')
@@ -29,6 +29,24 @@ class TestTasks(unittest.TestCase):
         self.task_master.delete_task(task_id)
         self.assertNotIn(task_id, self.task_master.tasks)
 
+    def test_edit_task(self):
+        """Test editing a task's details."""
+        # Add a task
+        self.task_master.add_task(Task("Original Title", "Original description", 3, "2025-02-20"))
+        task_id = list(self.task_master.tasks.keys())[0]
+        # Assuming TaskMaster provides an edit method
+        # If not, you could call the setters directly on the Task instance.
+        self.task_master.edit_task(self.task.id, "title", "Edited Title")
+        self.task_master.edit_task(self.task.id, "due_date", "Edited description")
+        self.task_master.edit_task(self.task.id, "priority", 1)
+        self.task_master.edit_task(self.task.id, "due_date", "2025-03-10")
+        # Check if the task was edited correctly
+        task = self.task_master.tasks[task_id]
+        self.assertEqual(task.title, "Edited Title")
+        self.assertEqual(task.description, "Edited description")
+        self.assertEqual(task.priority, 1)
+        self.assertEqual(task.due_date, "2025-03-10")
+
     def test_view_tasks(self):
         """Test viewing tasks (ensuring it doesn't crash)."""
         self.task_master.add_task(Task("View Task", "This task should appear", 7, "3-5-2002"))
@@ -41,8 +59,37 @@ class TestTasks(unittest.TestCase):
         self.task_master.tasks[task_id].completed = True
         self.assertTrue(self.task_master.tasks[task_id].completed)
    
-    def test_task_load(self):
-        pass
+    def test_save_and_load_tasks(self):
+        """Test that tasks are correctly saved to and loaded from a dedicated file."""
+        import os
+        
+        # Define the dedicated file name that TaskMaster uses
+        file_path = 'tasks.json'
+
+        # Clean up any existing file
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        
+        # Add a task and save using the dedicated file
+        self.task_master.add_task(Task("Persist Task", "Should persist", 2, "2025-04-01"))
+        self.task_master.save()
+        
+        # Create a new TaskMaster instance and load from the dedicated file
+        new_task_master = TaskMaster()
+        new_task_master.load()
+        
+        # Assert that the number of tasks match and verify task details
+        self.assertEqual(len(new_task_master.tasks), len(self.task_master.tasks))
+        original_task = list(self.task_master.tasks.values())[0]
+        loaded_task = list(new_task_master.tasks.values())[0]
+        self.assertEqual(original_task.title, loaded_task.title)
+        self.assertEqual(original_task.description, loaded_task.description)
+        self.assertEqual(original_task.priority, loaded_task.priority)
+        self.assertEqual(original_task.due_date, loaded_task.due_date)
+        
+        # Clean up the dedicated file after the test
+        if os.path.exists(file_path):
+            os.remove(file_path)
 
 class TestTask(unittest.TestCase):
 
@@ -79,6 +126,5 @@ class TestTask(unittest.TestCase):
         self.assertEqual(self.task.priority, 1)
         self.assertEqual(self.task.category, "Work")
         self.assertTrue(self.task.completed)
-
 
 if __name__ == "__main__": unittest.main(verbosity=2)
