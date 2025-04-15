@@ -1,12 +1,12 @@
 import tkinter as tk
 from tkinter import messagebox
-from task import Task
-from task_master import TaskMaster
+from src.task import Task
+from src.task_master import TaskMaster
 import tkinter.simpledialog as simpledialog
 from abc import ABC, abstractmethod
 from datetime import datetime
-import calendar_dropper
-import calendar_view
+import src.calendar_dropper as calendar_dropper
+import src.calendar_view as calendar_view
 
 task_manager = TaskMaster()
 

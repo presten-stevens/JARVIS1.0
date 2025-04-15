@@ -1,6 +1,6 @@
 import json
 import os
-from task import Task
+from src.task import Task
 
 class TaskMaster:
     def __init__(self, saveLoc = 'saves/', sortmode = "PRIORITY"):
