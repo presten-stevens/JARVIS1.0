@@ -7,6 +7,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 import calendar_dropper
 import calendar_view
+from reminder_manager import ReminderManager, Notifier
 
 task_manager = TaskMaster()
 
@@ -56,10 +57,10 @@ class TaskCard(tk.Frame):
 
     
     def initialize_elements(self):
-        self.task_name = tk.Label(self, text=self.task.title, font=( "Arial", 24), bg="lightblue")  
+        self.task_name = tk.Label(self, text=self.task.title, font=("Arial", 24), bg="lightblue")  
         self.task_name.grid(column=0,row=0,columnspan=2)
 
-        self.due_date = tk.Label(self, text=self.task.due_date, font=( "Arial", 14), background="lightblue")
+        self.due_date = tk.Label(self, text=self.task.due_date, font=("Arial", 14), background="lightblue")
         self.due_date.grid(column=0, row=1, columnspan=2)
 
         self.canvas = tk.Canvas(self, width=180, height=5, highlightthickness=0, bg="lightblue")
@@ -518,4 +519,20 @@ filter_menu.grid(row=1, column=3, padx=30, pady=30)
 
 print_button = tk.Button(root, text="Filter Tasks", command=lambda: filter_tasks(filter_var.get()))
 print_button.grid(row=2, column=3, padx=30, pady=30)
+
+notifications = tk.Label(root, text="Notification", height = 5, width = 52)
+notifications.grid(row=2, column=2, padx=30, pady=30)
+
+reminder_manager = ReminderManager(root)
+notifier = Notifier(reminder_manager)
+
+reminder_manager.add_reminder("Yippee!", datetime(year=2025, month=4, day=14, hour=19, minute=51))
+reminder_manager.add_reminder("Hooray!", datetime(year=2025, month=4, day=14, hour=19, minute=53))
+reminder_manager.add_reminder("Wahoo!", datetime(year=2025, month=4, day=14, hour=19, minute=55))
+
+reminder_manager.run_clock()
+
 root.mainloop()
+
+
+

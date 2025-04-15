@@ -1,11 +1,8 @@
 from datetime import datetime, timedelta
-import time
 import tkinter as tk
 
 
 ##TODOS
-
-# Connect to tkinter
 # Turn off clock when there are no reminders
 
 class Reminder():
@@ -14,11 +11,12 @@ class Reminder():
         self.time = time
 
     def __str__(self):
-        return f"Reminder for ({self.time}): {self.message}"
+        return f"Reminder for ({self.time}):\n{self.message}"
 
 
 class ReminderManager():
-    def __init__(self):
+    def __init__(self, root: tk.Tk):
+        self.root = root
         self.observer = None
         self.reminders = []
 
@@ -29,13 +27,12 @@ class ReminderManager():
         self.reminders.append(Reminder(message, time))
 
     def run_clock(self):
-        while (True): 
-            print(f"[{len(self.reminders)}] Checking at {datetime.now()}")
-            for reminder in self.reminders:
-                if ((reminder.time - datetime.now()) / timedelta(seconds=1)) < 0:
-                    self.observer.send_notification(reminder)
-                    self.reminders.remove(reminder) 
-            time.sleep(10)
+        print(f"[{len(self.reminders)}] Checking at {datetime.now()}")
+        for reminder in self.reminders:
+            if ((reminder.time - datetime.now()) / timedelta(seconds=1)) < 0:
+                self.observer.send_notification(reminder)
+                self.reminders.remove(reminder) 
+        self.root.after(10000, lambda : self.run_clock())
 
 
 class Notifier():
@@ -45,12 +42,10 @@ class Notifier():
 
     def send_notification(self, reminder):
         print(f"Sending Notification for: {reminder}")
+        
+        popup_window = tk.Toplevel(self.manager.root)
+        popup_window.title("Notification")
 
-reminder_manager = ReminderManager()
-mynotifier = Notifier(reminder_manager)
+        tk.Label(popup_window, text=reminder).pack(pady=5)
+        tk.Button(popup_window, text="Okay", command=popup_window.destroy).pack(pady=5)
 
-reminder_manager.add_reminder("Yippee!", datetime(year=2025, month=4, day=14, hour=16, minute=23))
-reminder_manager.add_reminder("Hooray!", datetime(year=2025, month=4, day=14, hour=16, minute=24))
-reminder_manager.add_reminder("Wahoo!", datetime(year=2025, month=4, day=14, hour=16, minute=25))
-
-reminder_manager.run_clock()
