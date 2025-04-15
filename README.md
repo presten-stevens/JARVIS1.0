@@ -26,6 +26,6 @@
 ### 1. Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/TaskMaster.git
+git clone https://github.com/YOUR_USERNAME/JARVIS1.0.git
 cd JARVIS1.0
 ./dist/task_cards
