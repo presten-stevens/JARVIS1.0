@@ -2,9 +2,6 @@ from datetime import datetime, timedelta
 import tkinter as tk
 
 
-##TODOS
-# Turn off clock when there are no reminders
-
 class Reminder():
     def __init__(self, message: str, time: datetime):
         self.message = message
@@ -25,6 +22,8 @@ class ReminderManager():
 
     def add_reminder(self, message: str, time: datetime):
         self.reminders.append(Reminder(message, time))
+        if len(self.reminders) == 1:
+            self.run_clock()
 
     def run_clock(self):
         print(f"[{len(self.reminders)}] Checking at {datetime.now()}")
@@ -32,7 +31,9 @@ class ReminderManager():
             if ((reminder.time - datetime.now()) / timedelta(seconds=1)) < 0:
                 self.observer.send_notification(reminder)
                 self.reminders.remove(reminder) 
-        self.root.after(10000, lambda : self.run_clock())
+
+        if self.reminders:
+            self.root.after(10000, lambda : self.run_clock())
 
 
 class Notifier():
@@ -41,7 +42,7 @@ class Notifier():
         self.manager.add_observer(self)
 
     def send_notification(self, reminder):
-        print(f"Sending Notification for: {reminder}")
+        print(f"Sending Notification for:\n{reminder}")
         
         popup_window = tk.Toplevel(self.manager.root)
         popup_window.title("Notification")
