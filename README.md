@@ -27,4 +27,5 @@
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/TaskMaster.git
-cd TaskMaster
+cd JARVIS1.0
+./dist/task_cards
