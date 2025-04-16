@@ -372,7 +372,7 @@ class AddTaskButton(tk.Frame):
         tags_label = tk.Label(input_window, text='Tags')
         tags_entry = tk.Entry(input_window, textvariable=tags)
 
-        def submit():
+        def submit(event = None):
             title_checker = CheckTitle()
             description_checker = CheckDescription()
             priority_checker = CheckPriority()
@@ -459,7 +459,7 @@ class RemindButton(tk.Frame):
         hour_spinbox = tk.Spinbox(input_window, from_=1, to=23, textvariable=hour_var, wrap=True, width=5)
         minute_spinbox = tk.Spinbox(input_window, from_=00, to=59, textvariable=minute_var, wrap=True, width=5)
 
-        def submit():
+        def submit(event = None):
             message_checker = CheckDescription()
             date_checker = CheckDate()
             time_checker = CheckTime()
@@ -542,6 +542,7 @@ def on_close(root):
     
     if result:
         task_manager.save()
+        reminder_manager.save()
         root.quit()
     else:
         root.quit() 
@@ -568,10 +569,6 @@ def filter_tasks(val):
 # Create main application window
 root = tk.Tk()
 root.title("Task Manager")
-
-# Initialize reminder manager and notifier
-reminder_manager = ReminderManager(root)
-notifier = Notifier(reminder_manager)
 
 # Add Task Button
 add_button = AddTaskButton(root, "Add New Task", new_card = NewCard())
@@ -608,6 +605,10 @@ remind_button.grid(row=2, column=2, padx=30, pady=30)
 
 print_button = tk.Button(root, text="Filter Tasks", command=lambda: filter_tasks(filter_var.get()))
 print_button.grid(row=2, column=3, padx=30, pady=30)
+
+# Initialize reminder manager and notifier
+reminder_manager = ReminderManager(root)
+notifier = Notifier(reminder_manager)
 
 root.mainloop()
 
