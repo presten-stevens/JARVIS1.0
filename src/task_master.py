@@ -3,7 +3,7 @@ import os
 from src.task import Task
 
 class TaskMaster:
-    def __init__(self, saveLoc = 'saves/', sortmode = "PRIORITY"):
+    def __init__(self, saveLoc = 'saves/tasks/', sortmode = "PRIORITY"):
         self.tasks = {}  
         self.save_loc = saveLoc
         self.save_dir = os.fsencode(self.save_loc)
