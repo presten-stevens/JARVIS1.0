@@ -1,8 +1,10 @@
 # The Taskmaster
-
 > "It is for us the living, rather, to be dedicated here to the unfinished work which they who fought here have thus far so nobly advanced. It is rather for us to be here dedicated to the great ***task*** remaining before us..."
 > 
 > **Abraham Lincoln**
+
+## Product Description
+The Taskmaster aka Jarvis is a task management application designed to help students organize and keep track of tasks. With features such as calendar view, reminder notifications, and filtering by tag, we believe that the Taskmaster has what it takes to meet your day-to-day needs!
 
 ## Navigation Menu
 1. [Project Launch](docs/projectLaunch.md)
