@@ -4,9 +4,10 @@ from src.task import Task
 from src.task_master import TaskMaster
 import tkinter.simpledialog as simpledialog
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, timedelta
 import src.calendar_dropper as calendar_dropper
 import src.calendar_view as calendar_view
+from src.reminder_manager import ReminderManager, Notifier
 
 task_manager = TaskMaster()
 
@@ -55,10 +56,10 @@ class TaskCard(tk.Frame):
 
     
     def initialize_elements(self):
-        self.task_name = tk.Label(self, text=self.task.title, font=( "Arial", 24), bg="lightblue")  
+        self.task_name = tk.Label(self, text=self.task.title, font=("Arial", 24), bg="lightblue")  
         self.task_name.grid(column=0,row=0,columnspan=2)
 
-        self.due_date = tk.Label(self, text=self.task.due_date, font=( "Arial", 14), background="lightblue")
+        self.due_date = tk.Label(self, text=self.task.due_date, font=("Arial", 14), background="lightblue")
         self.due_date.grid(column=0, row=1, columnspan=2)
 
         self.canvas = tk.Canvas(self, width=180, height=5, highlightthickness=0, bg="lightblue")
@@ -325,6 +326,16 @@ class CheckCategory(InputChecker):
         else:
             return True
 
+class CheckTime(InputChecker):
+    def checkObject(self, hour, min):
+        try:
+            hour = int(hour) 
+            min = int(min)
+            return hour < 24 and min < 60
+        except ValueError:
+            return False
+        
+
 class AddTaskButton(tk.Frame):
     def __init__(self, root, title:str, new_card:Editer, col=0, row=0, width=10) :
         super().__init__(root)
@@ -397,11 +408,6 @@ class AddTaskButton(tk.Frame):
                 input_window.destroy()
                 self.update_idletasks()
                 
-        # def submit(event=None):
-        #     default_category.add_card(TaskCard(root, Task(title.get(), description.get(), priority.get(), due_date.get(),
-        #                                                    tags=[tag.strip() for tag in tags.get().split(',')])))
-        #     input_window.destroy()
-
         submit_button = tk.Button(input_window, text = 'Submit', command=submit)
 
         title_label.grid(row=0,column=0)
@@ -424,7 +430,85 @@ class AddTaskButton(tk.Frame):
 
         input_window.bind("<Return>", submit)
 
-        
+class RemindButton(tk.Frame):
+    def __init__(self, root, col=0, row=0, width=10) :
+        super().__init__(root)
+        self.root = root
+        self.title = "Add Reminder"
+        complete = tk.Button(self, width=width, text=self.title, font=("Arial", 12), command= self.on_click)
+        complete.grid(column=col, row=row)
+
+    def on_click(self):
+        input_window = tk.Toplevel(self)
+        input_window.wm_title(self.title)
+
+        message = tk.StringVar()
+        date = tk.StringVar()
+        hour_var = tk.StringVar(value=datetime.now().hour)
+        minute_var = tk.StringVar(value=datetime.now().minute+1)
+
+        message_label = tk.Label(input_window, text='Reminder Message')
+        message_entry = tk.Entry(input_window, textvariable=message)
+
+        date_label = tk.Label(input_window, text='Notification Date')
+        date_entry = calendar_dropper.CalendarEntry(input_window)
+        date = date_entry.date
+
+        time_label = tk.Label(input_window, text='Notification Time')
+        hour_spinbox = tk.Spinbox(input_window, from_=1, to=23, textvariable=hour_var, wrap=True, width=5)
+        minute_spinbox = tk.Spinbox(input_window, from_=00, to=59, textvariable=minute_var, wrap=True, width=5)
+
+        def submit():
+            message_checker = CheckDescription()
+            date_checker = CheckDate()
+            time_checker = CheckTime()
+
+            valid = True
+
+            # Validate message
+            if not message_checker.checkObject(message.get()):
+                message_entry.config(bg="red")
+                valid = False
+            else:
+                message_entry.config(bg="white")
+            # Validate date                
+            if not date_checker.checkObject(date.get()):
+                date_entry.config(bg="red")
+                valid = False
+            else:
+                date_entry.config(bg="white")
+            # Validate time
+            if not time_checker.checkObject(hour_var.get(), minute_var.get()):
+                hour_spinbox.config(bg="red")
+                minute_spinbox.config(bg="red")
+                valid = False
+            else:
+                hour_spinbox.config(bg="white")
+                minute_spinbox.config(bg="white")
+            # Submit
+            if valid:
+                notify_time = datetime.strptime(date.get(), "%d/%m/%Y") + timedelta(hours=int(hour_var.get()), minutes=int(minute_var.get())) 
+                reminder_manager.add_reminder(message=message_entry.get(), time=notify_time)
+                input_window.destroy()
+                self.update_idletasks()
+                
+        submit_button = tk.Button(input_window, text = 'Submit', command=submit)
+
+        message_label.grid(row=0, column=0)
+        message_entry.grid(row=0, column=1)
+
+        date_label.grid(row=1, column=0)
+        date_entry.grid(row=1, column=1)
+
+        time_label.grid(row=2, column=0)
+        hour_spinbox.grid(row=2, column=1)
+        minute_spinbox.grid(row=2, column=2)
+
+        submit_button.grid(row=3, column=0, columnspan=2)
+
+        input_window.bind("<Return>", submit)
+
+ ### Depricated code??       
 class LoadButton(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
@@ -484,6 +568,10 @@ def filter_tasks(val):
 root = tk.Tk()
 root.title("Task Manager")
 
+# Initialize reminder manager and notifier
+reminder_manager = ReminderManager(root)
+notifier = Notifier(reminder_manager)
+
 # Add Task Button
 add_button = AddTaskButton(root, "Add New Task", new_card = NewCard())
 add_button.grid(row=1, column=1, padx=20)
@@ -508,13 +596,19 @@ for task in task_manager.sort_tasks():
 
 root.protocol("WM_DELETE_WINDOW", lambda: on_close(root))
 
-
 print(task_manager.get_tags())
 filter_var = tk.StringVar(root)
 filter_var.set("None")
 filter_menu = tk.OptionMenu(root, filter_var, *task_manager.get_tags())
 filter_menu.grid(row=1, column=3, padx=30, pady=30)
 
+remind_button = RemindButton(root)
+remind_button.grid(row=2, column=2, padx=30, pady=30)
+
 print_button = tk.Button(root, text="Filter Tasks", command=lambda: filter_tasks(filter_var.get()))
 print_button.grid(row=2, column=3, padx=30, pady=30)
+
 root.mainloop()
+
+
+
