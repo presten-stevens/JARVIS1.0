@@ -3,3 +3,4 @@
 /saves/
 .src/saves
 .venv
+build/
