@@ -26,6 +26,9 @@ The Taskmaster aka Jarvis is a task management application designed to help stud
 ## Video Demonstration
 [Click here to watch a live demo!](https://youtu.be/smGRUweLbGI)
 
+## Powerpoint Presentation
+[Final Powerpoint Presentation](docs/Jarvis.pdf)
+
 ## Setup Instructions
 
 ### 1. Clone the repository:
