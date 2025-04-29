@@ -35,5 +35,12 @@ The Taskmaster aka Jarvis is a task management application designed to help stud
 
 ```bash
 git clone https://github.com/presten-stevens/JARVIS1.0.git
+```
+
+### 2. Run the Executable
+Replace {os} with the os you are running (mac, ubuntu, windows)
+
+```bash
 cd JARVIS1.0
-./dist/task_cards
+./dist/task_cards_{os}
+```
